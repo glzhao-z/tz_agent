@@ -5,6 +5,7 @@ import datetime
 
 def get_current_time():
     """获取当前时间"""
+    print(format)
     return str(datetime.datetime.now())
 
 agent  = create_agent(model=get_llm() ,#模型
