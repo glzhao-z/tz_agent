@@ -5,7 +5,6 @@ import datetime
 
 def get_current_time():
     """获取当前时间"""
-    print(format)
     return str(datetime.datetime.now())
 
 agent  = create_agent(model=get_llm() ,#模型
@@ -13,7 +12,7 @@ agent  = create_agent(model=get_llm() ,#模型
              system_prompt='你是一个助理' )#系统提示词
 
 # r = agent.invoke({"messages": [{"role": "user", "content": "你好"}]})
-
+get_current_time()
 
 r = agent.invoke({"messages": [HumanMessage(content="现在几点")]})
 print(r['messages'][-1].content)
