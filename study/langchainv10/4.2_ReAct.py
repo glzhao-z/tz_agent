@@ -29,7 +29,7 @@ SYSTEM_PROMPT = """
    - 参数: 无
 4. 单位转换(unit_converter): 转换单位
    - 参数: value (数值), from_unit (原单位), to_unit (目标单位)
-   - 支持单位: km/m/cm, kg/g, °C/°F/K
+   
 
 示例：
 问题：姚明的身高是多少英尺？
@@ -155,7 +155,7 @@ def react_agent(question, max_steps=10):
         # 解析响应
         action_data = parse_react_response(response.content)
 
-        if not action_data:
+        if not action_data: # 仅是稳定性代码而已
             print("无法解析响应，尝试直接输出")
             return response.content
 
@@ -179,7 +179,6 @@ def react_agent(question, max_steps=10):
                     result = TOOL_REGISTRY[tool_name](**tool_input)
                 else:
                     result = TOOL_REGISTRY[tool_name]()
-
                 # 格式化观察结果
                 observation = f"工具 {tool_name} 结果: {result}"
                 print(observation)
