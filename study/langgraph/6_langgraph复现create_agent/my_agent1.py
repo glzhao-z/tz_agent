@@ -1,16 +1,19 @@
 from langgraph.graph import StateGraph,START,END
-from typing_extensions import TypedDict
+from typing_extensions import TypedDict, Annotated # 导入类型定义工具
+import operator # 导入操作符
+from langchain.messages import AnyMessage,HumanMessage
 
 class State(TypedDict):
-    messages:list #消息列表，用于存储对话历史
-
+    messages:Annotated[list[HumanMessage], operator.add] #消息列表，用于存储对话历史
 
 def create_agent(system_prompt,tools,model):
     agent = StateGraph(State)
+    model.system_prompt = system_prompt
 
     def model_node(state): #模型节点，执行模型
-        return model.invoke(state['messages'])
-        
+        ai_reply = model.invoke(state['messages'])
+        return {"messages": ai_reply}
+
     def tool_node(state): #工具节点
         # 根据state中的信息选择工具
         return 工具的执行结果
