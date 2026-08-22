@@ -1,8 +1,8 @@
 from langgraph.graph import StateGraph,START,END
 from typing_extensions import TypedDict, Annotated # 导入类型定义工具
 import operator # 导入操作符
-from langchain.messages import AnyMessage, SystemMessage
-from langgraph.prebuilt import ToolNode
+from langchain.messages import AnyMessage, SystemMessage,ToolMessage
+#from langgraph.prebuilt import ToolNode
 
 class State(TypedDict):
     messages:Annotated[list[AnyMessage], operator.add] #消息列表，用于存储对话历史
@@ -22,11 +22,23 @@ def create_agent(system_prompt,tools,model):
     """
     system_prompt = default_system_prompt + system_prompt
     model = model.bind_tools(tools) # 绑定工具
+
+    tools_by_name = {tool.name: tool for tool in tools}  # 注册工具
     # 系统提示词如何作用
     def model_node(state:State): #模型节点，执行模型
         messages = [SystemMessage(content=system_prompt)] + state['messages'] # 添加系统提示词
         ai_reply = model.invoke(messages)
         return {"messages": [ai_reply]}
+
+    def tool_node(state:State):
+        """执行工具调用"""
+        result = []
+        for tool_call in state["messages"][-1].tool_calls:
+            tool = tools_by_name[tool_call["name"]]  # 获取工具
+            observation = tool.invoke(tool_call["args"])
+            result.append(ToolMessage(content=observation, tool_call_id=tool_call["id"]))
+            # 通过tool_call_id关联工具调用和工具执行结果
+        return {"messages": result}
 
     # 怎么判断是否调用了工具
     def condinal_func(state:State):
@@ -38,7 +50,7 @@ def create_agent(system_prompt,tools,model):
             return "break"
 
     agent.add_node("model", model_node)
-    agent.add_node("tools", ToolNode(tools))
+    agent.add_node("tools", tool_node)
     agent.add_edge(START, "model")
     agent.add_conditional_edges("model", condinal_func, {"continue": "tools", "break": END})
     agent.add_edge("tools", "model") # 工具执行后，调用模型继续思考
