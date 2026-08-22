@@ -46,6 +46,6 @@ with open(image_path, "wb+") as f:
     f.write(graph_image)
 
 # 执行， 执行时传入state的初始值
-a = g.invoke({'key2':0})
+a = g.invoke({'key1':'22','key2':0})
 print('最终输出')
 print(a)

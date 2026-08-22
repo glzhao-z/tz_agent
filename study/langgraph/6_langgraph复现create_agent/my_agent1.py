@@ -6,9 +6,12 @@ from langchain.messages import AnyMessage, SystemMessage,ToolMessage
 
 class State(TypedDict):
     messages:Annotated[list[AnyMessage], operator.add] #消息列表，用于存储对话历史
+    # Annotated[参数类型，参数的更新方式] 添加类型注解
+    # list[AnyMessage] # 列表类型
+    # operator.add 列表的更新方式，添加元素
 
 def create_agent(system_prompt,tools,model):
-    agent = StateGraph(State)
+    agent = StateGraph(State) # 先声明图，定义状态类型
 
     # ReAct的system_prompt
     default_system_prompt = """
@@ -20,23 +23,23 @@ def create_agent(system_prompt,tools,model):
 
     以下是用户自定义的system_prompt:
     """
-    system_prompt = default_system_prompt + system_prompt
+    system_prompt = default_system_prompt + system_prompt # 添加默认系统提示词
     model = model.bind_tools(tools) # 绑定工具
 
-    tools_by_name = {tool.name: tool for tool in tools}  # 注册工具
+    tools_by_name = {tool.name: tool for tool in tools}  # 工具注册字典
     # 系统提示词如何作用
     def model_node(state:State): #模型节点，执行模型
         messages = [SystemMessage(content=system_prompt)] + state['messages'] # 添加系统提示词
-        ai_reply = model.invoke(messages)
-        return {"messages": [ai_reply]}
+        ai_reply = model.invoke(messages) # 调用模型
+        return {"messages": [ai_reply]} # 把模型回复加进状态里的messages
 
     def tool_node(state:State):
         """执行工具调用"""
         result = []
-        for tool_call in state["messages"][-1].tool_calls:
-            tool = tools_by_name[tool_call["name"]]  # 获取工具
-            observation = tool.invoke(tool_call["args"])
-            result.append(ToolMessage(content=observation, tool_call_id=tool_call["id"]))
+        for tool_call in state["messages"][-1].tool_calls: # 遍历工具调用,有可能不止一个
+            tool = tools_by_name[tool_call["name"]]  # 通过工具的名字获取工具
+            observation = tool.invoke(tool_call["args"]) # 调用工具
+            result.append(ToolMessage(content=observation, tool_call_id=tool_call["id"])) # 添加工具执行结果到消息列表
             # 通过tool_call_id关联工具调用和工具执行结果
         return {"messages": result}
 
@@ -49,10 +52,15 @@ def create_agent(system_prompt,tools,model):
         else:
             return "break"
 
-    agent.add_node("model", model_node)
-    agent.add_node("tools", tool_node)
+    agent.add_node("model", model_node) # 添加模型节点
+    agent.add_node("tools", tool_node) # 添加工具节点
+
     agent.add_edge(START, "model")
     agent.add_conditional_edges("model", condinal_func, {"continue": "tools", "break": END})
     agent.add_edge("tools", "model") # 工具执行后，调用模型继续思考
 
-    return agent.compile()
+    graph = agent.compile()
+    return graph
+
+
+
