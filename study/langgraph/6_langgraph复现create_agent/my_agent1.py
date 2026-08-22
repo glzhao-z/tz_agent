@@ -1,10 +1,10 @@
 from langgraph.graph import StateGraph,START,END
 from typing_extensions import TypedDict, Annotated # 导入类型定义工具
 import operator # 导入操作符
-from langchain.messages import AnyMessage,HumanMessage
+from langchain.messages import AnyMessage
 
 class State(TypedDict):
-    messages:Annotated[list[HumanMessage], operator.add] #消息列表，用于存储对话历史
+    messages:Annotated[list[AnyMessage], operator.add] #消息列表，用于存储对话历史
 
 def create_agent(system_prompt,tools,model):
     agent = StateGraph(State)
