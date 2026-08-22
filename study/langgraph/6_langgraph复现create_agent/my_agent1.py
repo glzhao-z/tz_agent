@@ -1,31 +1,46 @@
 from langgraph.graph import StateGraph,START,END
 from typing_extensions import TypedDict, Annotated # 导入类型定义工具
 import operator # 导入操作符
-from langchain.messages import AnyMessage
+from langchain.messages import AnyMessage, SystemMessage
+from langgraph.prebuilt import ToolNode
 
 class State(TypedDict):
     messages:Annotated[list[AnyMessage], operator.add] #消息列表，用于存储对话历史
 
 def create_agent(system_prompt,tools,model):
     agent = StateGraph(State)
-    model.system_prompt = system_prompt
 
-    def model_node(state): #模型节点，执行模型
-        ai_reply = model.invoke(state['messages'])
-        return {"messages": ai_reply}
+    # ReAct的system_prompt
+    default_system_prompt = """
+    你是一个智能助手，使用ReAct（Reasoning and Acting）模式解决问题。请按照以下步骤思考：
 
-    def tool_node(state): #工具节点
-        # 根据state中的信息选择工具
-        return 工具的执行结果
+    1. 思考(Thought)：分析问题，决定下一步行动
+    2. 行动(Action)：调用工具或回答问题
+    3. 观察(Observation)：获取工具执行结果
 
-    def condinal_func(state):
-        return "continue" if state['记录是否调用工具']  else "break"
+    以下是用户自定义的system_prompt:
+    """
+    system_prompt = default_system_prompt + system_prompt
+    model = model.bind_tools(tools) # 绑定工具
+    # 系统提示词如何作用
+    def model_node(state:State): #模型节点，执行模型
+        messages = [SystemMessage(content=system_prompt)] + state['messages'] # 添加系统提示词
+        ai_reply = model.invoke(messages)
+        return {"messages": [ai_reply]}
 
+    # 怎么判断是否调用了工具
+    def condinal_func(state:State):
+        # 获取state中的messages中的最后一个消息
+        last_message = state['messages'][-1]
+        if last_message.tool_calls: # 判断是否调用了工具
+            return "continue"
+        else:
+            return "break"
 
     agent.add_node("model", model_node)
-    agent.add_node("tools", tool_node)
+    agent.add_node("tools", ToolNode(tools))
     agent.add_edge(START, "model")
     agent.add_conditional_edges("model", condinal_func, {"continue": "tools", "break": END})
-
+    agent.add_edge("tools", "model") # 工具执行后，调用模型继续思考
 
     return agent.compile()
