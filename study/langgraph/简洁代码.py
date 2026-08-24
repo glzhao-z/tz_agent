@@ -1,4 +1,5 @@
 import os
+import time
 
 '''
 #宏观
@@ -28,14 +29,22 @@ def node1(state:State):
 
 def node2(state:State):
     print('node2')
+
+def node3(state:State):
+    print('node3')
+
 # 先实例化一个图, 传入状态模板State
 graph = StateGraph(State)
 graph.add_node("n1", node1) # 添加节点,给节点取个名字，第二个参数是节点函数
 graph.add_node("n2", node2)
+graph.add_node("n3", node3)
 # 边
 graph.add_edge(START, "n1")
 graph.add_edge("n1", "n2")
+graph.add_edge("n1", "n3")
 graph.add_edge("n2", END)
+graph.add_edge("n3", END)
+
 # 编译图
 g = graph.compile()
 
