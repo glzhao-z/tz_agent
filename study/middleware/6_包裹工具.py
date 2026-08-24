@@ -9,8 +9,8 @@ from langchain.messages import ToolMessage
 from langgraph.types import Command
 
 @wrap_tool_call
-def wrap_tool_call_function(request,
-                            handle):
+def wrap_tool_call_function(request:ToolCallRequest,
+                            handle:Callable[[ToolCallRequest],ToolMessage|Command])->ToolMessage|Command:
     print("Tool request:", request)
     toolMessage = handle(request) # 调用工具
     print("Tool Message:", toolMessage)
