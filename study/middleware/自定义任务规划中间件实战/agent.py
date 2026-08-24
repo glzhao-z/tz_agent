@@ -1,10 +1,7 @@
-
 '''
 planning and execute
 计划与执行
-
 '''
-
 
 from langchain.agents import create_agent
 import mytools as mt
@@ -12,8 +9,8 @@ from langchain_openai import ChatOpenAI
 from todo_list_middle import PlanningMiddleware
 def get_llm():
     llm = ChatOpenAI(
-        model="Qwen/Qwen3.5-27B",
-        #model ="Qwen/Qwen3.5-122B-A10B",
+        #model="Qwen/Qwen3.5-27B",
+        model ="Qwen/Qwen3.5-122B-A10B",
         base_url="https://api.siliconflow.cn/v1"
     )
     return llm

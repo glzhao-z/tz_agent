@@ -19,6 +19,8 @@ def write_file(file_path, content):
     :param content: 写入的内容
     :return:
     """
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
     with open(file_path, "w+", encoding="utf-8") as f:
         f.write(content)
 
