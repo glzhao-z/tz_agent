@@ -32,7 +32,7 @@ wrap2_end
 wrap1_start
 wrap1_end
 
-C:
+C: 正确答案
 wrap1_start
 wrap2_start
 wrap2_end
