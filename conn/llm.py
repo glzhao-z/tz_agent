@@ -5,7 +5,8 @@ dotenv.load_dotenv()
 
 def get_llm():
     llm = ChatOpenAI(base_url='https://api.siliconflow.cn/v1',
-                     model='Qwen/Qwen3.5-27B')
+                     #model='Qwen/Qwen3.5-27B',
+                     model='Qwen/Qwen3-Next-80B-A3B-Instruct')
     return llm
 
 
