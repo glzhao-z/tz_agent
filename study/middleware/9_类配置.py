@@ -15,6 +15,8 @@ import datetime
 from langchain.agents.middleware import AgentMiddleware, ModelRequest, ModelResponse, ExtendedModelResponse
 from langchain.agents.middleware import AgentState
 
+
+
 class MyState(AgentState):
     key1: str # 中间件1所用
 
