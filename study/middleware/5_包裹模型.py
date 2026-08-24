@@ -12,6 +12,7 @@ def before_agent_function(state,runtime):
     print("Before agent state:", state)
     print("Before agent runtime:", runtime)
 
+
 @after_agent
 def after_agent_function(state,runtime):
     print("After agent state:", state)
