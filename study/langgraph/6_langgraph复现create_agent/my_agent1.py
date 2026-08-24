@@ -55,7 +55,6 @@ def create_agent(system_prompt,tools,model):
 
     agent.add_node("model", model_node) # 添加模型节点
     agent.add_node("tools", tool_node) # 添加工具节点
-
     agent.add_edge(START, "model")
     agent.add_conditional_edges("model", condinal_func, {"continue": "tools", "break": END})
     agent.add_edge("tools", "model") # 工具执行后，调用模型继续思考
