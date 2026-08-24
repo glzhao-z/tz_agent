@@ -33,6 +33,7 @@ def create_agent(system_prompt,tools,model):
         ai_reply = model.invoke(messages) # 调用模型
         return {"messages": [ai_reply]} # 把模型回复加进状态里的messages
 
+
     def tool_node(state:State):
         """执行工具调用"""
         result = []

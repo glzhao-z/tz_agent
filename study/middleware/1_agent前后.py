@@ -31,7 +31,10 @@ image_path = "agent.png"
 with open(image_path, "wb+") as f:
     f.write(graph_image)
 
-r = agent.invoke({"messages": [HumanMessage(content="现在几点")]})
-print(r['messages'][-1].content)
+r = agent.stream({"messages": [HumanMessage(content="现在几点")]})
 
-print(r)
+for rr in r:
+    print(rr)
+
+# print(r['messages'][-1].content)
+# print(r)
