@@ -14,7 +14,6 @@ def get_small_llm():
 
 
 if __name__ == '__main__':
-    from utils.general_utils.loggers import logger
-
-    logger.info("LLM module loaded successfully.")
+    l = get_llm()
+    print(l.invoke("你好"))
 
