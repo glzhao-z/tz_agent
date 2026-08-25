@@ -1,28 +1,101 @@
 
-# 需求，做一个方法使其返回清晰的目录结构
-'''
-├── doc_utils
-│   ├── __pycache__
-│   │   ├── base64_utils.cpython-311.pyc
-│   │   ├── download_utils.cpython-311.pyc
-│   │   ├── markitdown_utils.cpython-311.pyc
-│   │   ├── os_utils.cpython-311.pyc
-│   │   └── zip_files.cpython-311.pyc
-│   ├── base64_utils.py
-│   ├── download_utils.py
-│   ├── markitdown_utils.py
-│   ├── os_utils.py
-│   └── zip_files.py
-├── general_utils
-│   ├── __pycache__
-│   │   ├── globle_util.cpython-311.pyc
-│   │   └── loggers.cpython-311.pyc
-│   ├── globle_util.py
-│   └── loggers.py
-└── langchain_utils
-    ├── __pycache__
-    │   ├── common_utils.cpython-311.pyc
-    │   └── stream_util.cpython-311.pyc
-    ├── common_utils.py
-    └── stream_util.py
-'''
+import os
+
+def list_directory(path, indent=''):
+    """
+    递归列出目录结构，返回树形结构的字符串
+
+    参数:
+        path: 要列出的目录路径
+        indent: 缩进字符串，用于控制树形结构的层级显示
+                (递归调用时自动传递，首次调用不需要提供)
+
+    返回:
+        返回一个字符串，包含整个目录树的文本表示
+    """
+
+    # 初始化一个空字符串，用于累积当前层级及子目录的所有输出内容
+    tree_str = ''
+
+    try:
+        # os.listdir(path) 获取指定路径下的所有文件和目录名称（不包括完整路径）
+        # 返回一个包含名称的列表，例如: ['file1.txt', 'dir1', 'file2.jpg']
+        items = os.listdir(path)
+
+        # 对项目列表进行排序，确保输出顺序一致
+        # 默认按字母顺序排序，便于阅读
+        items.sort()  # 排序显示
+
+        # 使用 enumerate 遍历列表，同时获取索引 i 和项目名称 item
+        # i 从 0 开始，用于判断是否是最后一个元素
+        for i, item in enumerate(items):
+            # 使用 os.path.join 将目录路径和项目名称连接成完整路径
+            # 这样可以正确处理不同操作系统的路径分隔符（Windows用\，Linux/Mac用/）
+            item_path = os.path.join(path, item)
+
+            # 判断当前项目是否是列表中的最后一个
+            # len(items) - 1 是最后一个元素的索引
+            # 例如: 如果有5个项目，最后一个索引是4
+            is_last = (i == len(items) - 1)
+
+            # 选择前缀符号（树形结构的连接线）
+            # 如果是最后一个项目，使用 '└── '（结尾符号）
+            # 否则使用 '├── '（中间符号）
+            # 这些符号模拟了树形结构的视觉效果
+            # 例如:
+            # ├── 项目1
+            # ├── 项目2
+            # └── 项目3 (最后一个)
+            prefix = '└── ' if is_last else '├── '
+
+            # 将当前项目添加到结果字符串中
+            # f-string 格式化字符串: {indent}缩进 + {prefix}连接符 + {item}项目名
+            # \n 是换行符，确保每个项目单独占一行
+            tree_str += f'\n{indent}{prefix}{item}'
+
+            # 检查当前项目是否为目录
+            # os.path.isdir() 判断路径是否是一个目录
+            if os.path.isdir(item_path):
+                # 如果是目录，需要递归进入该目录，继续列出其内容
+
+                # 计算下一级的缩进字符串
+                # 根据当前项目是否是最后一个，决定使用什么缩进符号
+                # 如果是最后一个: 使用空格缩进（不再有竖线）
+                # 如果不是最后一个: 使用竖线和空格（表示还有后续兄弟项目）
+                #
+                # 例如当前层级:
+                # ├── dir1/       (不是最后一个，下一级缩进用 '│   ')
+                # │   └── file    (竖线表示上面还有兄弟目录)
+                # └── dir2/       (是最后一个，下一级缩进用 '    ')
+                #     └── file    (空格缩进，表示上面没有兄弟了)
+                new_indent = indent + ('    ' if is_last else '│   ')
+
+                # 递归调用当前函数，传入子目录路径和新的缩进
+                # 将递归返回的子目录树形结构字符串追加到当前结果中
+                # 注意: 递归调用返回的字符串已经包含了换行和正确的缩进
+                tree_str += list_directory(item_path, new_indent)
+
+        # 返回当前层级及所有子目录累积的树形结构字符串
+        return tree_str
+
+    except PermissionError:
+        # 当没有权限访问某个目录时会发生 PermissionError
+        # 例如: 系统受保护的目录、其他用户的私有目录等
+
+        # 返回权限不足的提示信息
+        # 使用 f-string 格式化，包含当前的缩进
+        # 这样错误提示会显示在正确的位置，保持树形结构的对齐
+        return f'{indent}[权限不足]'
+
+
+
+
+
+
+if __name__ == "__main__":
+    print(list_directory('../'))
+
+
+
+
+
