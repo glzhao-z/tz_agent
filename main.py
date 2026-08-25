@@ -1,2 +1,2 @@
-from content.all_agnet import AllAgent
-agent = AllAgent().agent  
+from content.all_agent import AllAgent
+agent = AllAgent().agent
