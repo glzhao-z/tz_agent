@@ -14,5 +14,7 @@ def get_small_llm():
 
 
 if __name__ == '__main__':
-    pass
+    from utils.general_utils.loggers import logger
+
+    logger.info("LLM module loaded successfully.")
 
