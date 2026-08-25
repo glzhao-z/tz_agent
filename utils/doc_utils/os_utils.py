@@ -1,6 +1,28 @@
 
 import os
 
+'''
+# 需求：
+# 届时做中间时，是文件发生“更新”时才展示目录结构给Agent看，不用每次都给Agent展示。
+1. 多了一个文件，算更新。
+2. 少了一个文件，算更新。
+3. 文件被修改了，在这个需求，它不算更新。
+4. 文件名改了，算更新。
+'''
+
+# 递归获取目录下所有文件的路径集合。
+def get_all_files(directory):
+    all_files = set() # 初始化一个空集合，用于存储所有文件的路径
+    for file_name in os.listdir(directory): # 遍历目录中的所有文件和子目录
+        file_path = os.path.join(directory, file_name) # 获取文件的完整路径
+        if os.path.isdir(file_path): # 如果是目录，则递归获取其所有文件路径
+            all_files.update(get_all_files(file_path)) # 将子目录中的文件路径添加到集合中
+        else: # 如果是文件，则添加到集合中
+            all_files.add(file_path)
+    return all_files
+
+
+
 def list_directory(path, indent=''):
     """
     递归列出目录结构，返回树形结构的字符串
@@ -93,7 +115,7 @@ def list_directory(path, indent=''):
 
 
 if __name__ == "__main__":
-    print(list_directory('../'))
+    print(get_all_files('../'))
 
 
 
