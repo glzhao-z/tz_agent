@@ -1,5 +1,5 @@
 import shutil
-import os
+
 
 
 # 做一个方法接收文件夹然后压缩层zip
@@ -14,4 +14,3 @@ def zip_folder(folder_path):
     return zip_path
 
 
-zip_folder("asdas")
