@@ -10,3 +10,11 @@ MODEL_API_BASE_URL = os.getenv("MODEL_API_BASE_URL") # 从环境变量中获取b
 
 LOG_DIR = os.path.dirname(__file__) # 当前脚本所在目录
 NEED_CONSOLE_LOG = False # 日志是否打印到控制台
+
+if os.getenv("HOST_IP") and os.getenv("MINIO_PORT"):
+    MINIO_ENDPOINT = os.getenv("HOST_IP") + ':' + os.getenv("MINIO_PORT") # 获取MinIO端点
+else:
+    MINIO_ENDPOINT = "localhost:9000"
+
+MINIO_ACCESS_KEY = os.getenv("MINIO_ACCESS_KEY")
+MINIO_SECRET_KEY = os.getenv("MINIO_SECRET_KEY")
