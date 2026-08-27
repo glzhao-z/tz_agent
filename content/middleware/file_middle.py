@@ -1,10 +1,8 @@
-
 from langchain.agents.middleware import AgentState,AgentMiddleware
 from langchain.messages import ToolMessage
-
-
 from utils.doc_utils import os_utils as ou
 from base import config as cfg
+from uuid import uuid4
 
 class FileMiddle(AgentMiddleware):
 
@@ -13,4 +11,7 @@ class FileMiddle(AgentMiddleware):
         # 1. 得到目录结构字符串
         dir_str = ou.list_directory(path=cfg.ROOT_PATH_AGENT)
         # 2. 添加到上下文
-        return {'messages':[ToolMessage(content=f'当前目录结构如下:\n{dir_str}',tool_call_id='directory_tool')]}
+        return {'messages':[ToolMessage(content=f'当前目录结构如下:\n{dir_str}',tool_call_id=uuid4().hex)]}
+
+
+    # 每次得到目录结构后，记录于某一个日志系统中，想要区分每次打印结构的追踪标识
