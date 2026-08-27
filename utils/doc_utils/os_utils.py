@@ -1,14 +1,18 @@
 
 import os
 
-'''
-# 需求：
-# 届时做中间时，是文件发生“更新”时才展示目录结构给Agent看，不用每次都给Agent展示。
-1. 多了一个文件，算更新。
-2. 少了一个文件，算更新。
-3. 文件被修改了，在这个需求，它不算更新。
-4. 文件名改了，算更新。
-'''
+# 递归获取每个文件的修改时间取最晚的那个时间返回
+def get_latest_modification_time(directory):
+    latest_time = 0 # 初始化为0，表示最晚修改时间初始为0
+    for file_name in os.listdir(directory): # 遍历目录中的所有文件和子目录
+        file_path = os.path.join(directory, file_name) # 获取文件的完整路径
+        if os.path.isdir(file_path): # 如果是目录，则递归获取其最晚修改时间
+            latest_time = max(latest_time, get_latest_modification_time(file_path)) # 取最晚修改时间
+        else:
+            latest_time = max(latest_time, os.path.getmtime(file_path)) # 取最晚修改时间
+    return latest_time
+
+
 
 # 递归获取目录下所有文件的路径集合。
 def get_all_files(directory):
@@ -115,9 +119,6 @@ def list_directory(path, indent=''):
 
 
 if __name__ == "__main__":
-    #print(get_all_files('../'))
-
-
     a = {'a/b.txt','a/c.txt','D/d.txt','e/d.txt'}
     b = {'D/d.txt','a/b.txt','a/c.txt'}
     print(a==b)

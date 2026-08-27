@@ -1,6 +1,6 @@
 from langchain.agents.middleware import AgentState,AgentMiddleware
 from langchain.messages import AIMessage
-from utils.doc_utils import zip_files as zf
+from utils.doc_utils import zip_files as zf, os_utils as ou
 from base import config as cfg
 from conn import minio_conn as mc
 import asyncio
@@ -10,8 +10,9 @@ import time
 class state(AgentState):
     start_time:float
 
-
 class MinioMiddle(AgentMiddleware):
+
+    state_schema = state
 
     def __init__(self):
         super().__init__()
@@ -22,7 +23,7 @@ class MinioMiddle(AgentMiddleware):
 
     async def aafter_agent(self, state, runtime):
 
-        if 文件夹更新时间 > state['start_time']:
+        if ou.get_latest_modification_time(cfg.ROOT_PATH_AGENT) > state['start_time']:
             # 1. 压缩成zip
             zip_path = await asyncio.to_thread(zf.zip_folder,cfg.ROOT_PATH_AGENT)
             # 2. 上传minio并得到下载连接
