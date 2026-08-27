@@ -115,9 +115,10 @@ def list_directory(path, indent=''):
 
 
 if __name__ == "__main__":
-    print(get_all_files('../'))
+    #print(get_all_files('../'))
 
 
-
-
+    a = {'a/b.txt','a/c.txt','D/d.txt','e/d.txt'}
+    b = {'D/d.txt','a/b.txt','a/c.txt'}
+    print(a==b)
 
