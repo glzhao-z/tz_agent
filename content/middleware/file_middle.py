@@ -1,5 +1,11 @@
+from typing import Callable, Any
+
 from langchain.agents.middleware import AgentState,AgentMiddleware
 from langchain.messages import ToolMessage
+from langgraph.prebuilt.tool_node import ToolCallRequest
+from langgraph.types import Command
+from openai.resources.skills.versions import content
+
 from utils.doc_utils import os_utils as ou
 from base import config as cfg
 from uuid import uuid4
@@ -29,5 +35,17 @@ class FileMiddle(AgentMiddleware):
             return {'messages':[ToolMessage(content=f'当前目录结构如下:\n{dir_str}',tool_call_id=uuid4().hex)],
                     'before_paths':current_paths} # 更新目录结构记录
 
+    # wrap_tool_call的中间件
+    # 如果包含root_dir，就消掉即可。
+    async def awrap_tool_call(self,request,handler):
+        response = await handler(request) # 调用工具
+        # 怎么工具返回中的内容
+        response.content = response.content.replace(cfg.ROOT_PATH_AGENT,'')
+        # 消掉root_dir
+        return response
 
-    # 每次得到目录结构后，记录于某一个日志系统中，想要区分每次打印结构的追踪标识
+
+if __name__ == '__main__':
+    s = '萨达撒 /a.txt  阿三大苏打'
+    s = s.replace('/agent_files','')
+    print(s)
