@@ -1,15 +1,12 @@
-from typing import Callable, Any
-
 from langchain.agents.middleware import AgentState,AgentMiddleware
 from langchain.messages import ToolMessage
-from langgraph.prebuilt.tool_node import ToolCallRequest
-from langgraph.types import Command
-from openai.resources.skills.versions import content
-
 from utils.doc_utils import os_utils as ou
 from base import config as cfg
 from uuid import uuid4
 from utils.general_utils.loggers import logger
+from os.path import normpath as np
+
+
 
 class FileState(AgentState):
     before_paths:set
@@ -39,13 +36,17 @@ class FileMiddle(AgentMiddleware):
     # 如果包含root_dir，就消掉即可。
     async def awrap_tool_call(self,request,handler):
         response = await handler(request) # 调用工具
-        # 怎么工具返回中的内容
-        response.content = response.content.replace(cfg.ROOT_PATH_AGENT,'')
-        # 消掉root_dir
-        return response
+        # 边界情况1 判断工具的返回是否是ToolMessage：
+        logger.info(type(response))
+        if type(response)==ToolMessage:
+            # 边界情况2 判断它是否有值且是字符串
+            if response.content and type(response.content) is str:
+                # 边界情况3 要规划化路径字符串中的 分隔符 /
+                # 怎么工具返回中的内容
+                response.content = np(response.content).replace(cfg.ROOT_PATH_AGENT,'')
+            # 消掉root_dir
+            return response
 
 
 if __name__ == '__main__':
-    s = '萨达撒 /a.txt  阿三大苏打'
-    s = s.replace('/agent_files','')
-    print(s)
+    pass
