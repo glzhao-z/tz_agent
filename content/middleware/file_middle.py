@@ -3,6 +3,7 @@ from langchain.messages import ToolMessage
 from utils.doc_utils import os_utils as ou
 from base import config as cfg
 from uuid import uuid4
+from utils.general_utils.loggers import logger
 
 class FileState(AgentState):
     before_paths:set
@@ -11,6 +12,8 @@ class FileState(AgentState):
 # 2. 更新
 
 class FileMiddle(AgentMiddleware):
+
+    state_schema = FileState
 
     def before_model(self, state,runtime):
         # 把目录结构添加到上下文
