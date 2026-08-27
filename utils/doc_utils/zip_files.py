@@ -13,4 +13,6 @@ def zip_folder(folder_path):
     shutil.make_archive(folder_path, 'zip', folder_path)
     return zip_path
 
-print(zip_folder('test_folder'))
+if __name__ == '__main__':
+
+    print(zip_folder('test_folder'))
