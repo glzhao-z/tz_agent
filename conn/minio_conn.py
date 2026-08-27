@@ -52,10 +52,16 @@ def get_download_object(bucket_name,object_name):
 
 # 上传文件并获取下载链接
 def upload_file_and_get_download_url(bucket_name, object_name, file_path):
+    """
+    上传文件并获取下载链接
+    :param bucket_name: 桶名
+    :param object_name: 对象名(minio端的)
+    :param file_path: 文件路径(本地的)
+    """
     upload_file(bucket_name, object_name, file_path)
     return get_download_object(bucket_name, object_name)
 
 
 
 if __name__ == '__main__':
-    print(client.list_buckets())
+    upload_file_and_get_download_url(cfg.ROOT_PATH_AGENT, 'a.py','a.py')

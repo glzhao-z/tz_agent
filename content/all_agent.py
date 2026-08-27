@@ -2,7 +2,7 @@ from deepagents import create_deep_agent
 from conn.llm import get_small_llm as get_llm
 from base import config as cfg
 from content.mytools import globle_tools as gt
-from content.middleware import file_middle
+from content.middleware import file_middle,minio_middle
 from deepagents.backends import FilesystemBackend
 
 class AllAgent():
@@ -10,7 +10,7 @@ class AllAgent():
     def __init__(self):
         self.agent  = create_deep_agent(model=get_llm(),#模型
                      tools=[gt.run_command,gt.get_current_time],#工具列表
-                     middleware=[file_middle.FileMiddle()],
+                     middleware=[file_middle.FileMiddle(),minio_middle.MinioMiddle()],
                      system_prompt='你是一个助理',
                      backend=FilesystemBackend(root_dir=cfg.ROOT_PATH_AGENT,virtual_mode=True))#系统提示词
 
