@@ -12,7 +12,7 @@ class AllAgent():
                      tools=[gt.run_command,gt.get_current_time],#工具列表
                      middleware=[file_middle.FileMiddle()],
                      system_prompt='你是一个助理',
-                     backend=FilesystemBackend(root_dir=cfg.ROOT_PATH_AGENT))#系统提示词
+                     backend=FilesystemBackend(root_dir=cfg.ROOT_PATH_AGENT,virtual_mode=True))#系统提示词
 
 
 if __name__ == '__main__':
