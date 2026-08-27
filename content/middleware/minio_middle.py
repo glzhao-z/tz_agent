@@ -19,3 +19,6 @@ class MinioMiddle(AgentMiddleware):
         download_url = await asyncio.to_thread(mc.upload_file_and_get_download_url, cfg.MINIO_BUCKET_NAME, os.path.basename(zip_path), zip_path)
         # 3. 把下载连接添加进AImessage
         return {'messages':[AIMessage(content=download_url)]}
+
+    # 优化1：把下载连接弄成 超链接形式的字符串
+    # 优化2：做一个机制，仅在文件夹内有更新时才上传。
