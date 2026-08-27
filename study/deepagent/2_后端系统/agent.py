@@ -1,3 +1,5 @@
+import os.path
+
 from deepagents import create_deep_agent
 from langchain_openai import ChatOpenAI
 from deepagents.backends import FilesystemBackend # 导入文件系统后端
@@ -24,9 +26,9 @@ agent = create_deep_agent(
 )
 
 
-# res = agent.stream({"messages":[{"role":"user","content":"写个a.txt,写一句hello world"}]})
-# for chunk in res:
-#     print(chunk)
+res = agent.stream({"messages":[{"role":"user","content":"写个a.txt,写一句hello world"}]})
+for chunk in res:
+    print(chunk)
 
 
 
