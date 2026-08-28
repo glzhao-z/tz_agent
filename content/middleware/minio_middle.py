@@ -23,6 +23,10 @@ class MinioMiddle(AgentMiddleware):
 
     async def aafter_agent(self, state, runtime):
 
+        # 优化2：做一个机制，仅在文件夹内有更新时才上传。
+        # 检测文件夹内的文件的最后修改时间改文是否晚于工作开始时间(before_agent时）
+        # 有晚于的说明这一轮对话中有修件，需要上传。
+        # 如果没有，就说明这一轮对话中没有修改文件，则不需要上传。
         if ou.get_latest_modification_time(cfg.ROOT_PATH_AGENT) > state['start_time']:
             # 1. 压缩成zip
             zip_path = await asyncio.to_thread(zf.zip_folder,cfg.ROOT_PATH_AGENT)
@@ -34,9 +38,7 @@ class MinioMiddle(AgentMiddleware):
             return {'messages':[AIMessage(content=download_url)]}
 
 
-    # 优化2：做一个机制，仅在文件夹内有更新时才上传。
-    # 检测文件夹内的文件的最后修改时间是否晚于工作开始时间(before_agent时）
-    # 有晚于的说明这一轮对话中有修改文件，需要上传。
-    # 如果没有吗，就说明这一轮对话中没有修改文件，则不需要上传。
+
+
 
 
