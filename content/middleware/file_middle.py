@@ -1,8 +1,8 @@
-import os.path
+import os.path,asyncio
 
 from langchain.agents.middleware import AgentState,AgentMiddleware
 from langchain.messages import ToolMessage
-from utils.doc_utils import os_utils as ou
+from utils.doc_utils import os_utils as ou, base64_utils
 from base import config as cfg
 from uuid import uuid4
 from utils.general_utils.loggers import logger
@@ -20,10 +20,9 @@ class FileState(AgentState):
 class FileMiddle(AgentMiddleware):
 
     state_schema = FileState
-    def before_agent(self,state,runtime):
-        logger.info(state['upload_files'])
-        dir = cfg.ROOT_PATH_AGENT+ '/user_upload'
-        os.makedirs(dir, exist_ok=True) # 创建目录
+    async def abefore_agent(self,state,runtime):
+        dir = os.path.join(cfg.ROOT_PATH_AGENT, cfg.USER_UPLOAD_PATH)
+        await asyncio.to_thread(os.makedirs,dir, exist_ok=True) # 创建目录
         # 获取代表文件的数据
         for file in state['upload_files']:
             # 获取每个文件的base64字符串及文件名
@@ -31,7 +30,7 @@ class FileMiddle(AgentMiddleware):
             file_name = file['metadata']['filename']
             file_path = os.path.join(dir, file_name)
             # 解码并保存
-            base64_utils.decode_file(file_base64, file_path)
+            await asyncio.to_thread(base64_utils.decode_file,file_base64, file_path)
 
 
     def before_model(self, state,runtime):
