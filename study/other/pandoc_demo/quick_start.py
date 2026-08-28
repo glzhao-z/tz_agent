@@ -1,5 +1,5 @@
 import pypandoc
-
+from utils.general_utils import globle_util as gu
 
 def convert_file(filepath, output_format):
     """
@@ -22,36 +22,35 @@ def convert_file(filepath, output_format):
         input_format = 'md'  # 把txt当作md
 
     if output_format.lower() == 'pdf':
-        pass
         # 如果输入格式是txt，将其视为md（Markdown）格式处理
         # 因为Pandoc对txt支持有限，而txt和md语法相似
 
         # 根据操作系统平台选择不同的字体配置
         # get_platform()返回0表示Windows，非0表示其他系统（如Linux/Mac）
-        # if get_platform() == 0:
-        #     # Windows平台配置
-        #     # pdf_engine = '--pdf-engine=wkhtmltopdf'  # 注释掉的备选引擎
-        #     mainfont = 'mainfont=SimSun'  # 设置主字体为宋体（Windows）
-        #     cjkmainfont = 'CJKmainfont=SimSun'  # 设置CJK（中日韩）字体为宋体
-        # else:
-        #     # 非Windows平台配置（Linux/Mac）
-        #     # pdf_engine = '--pdf-engine=weasyprint'  # 注释掉的备选引擎
-        #     mainfont = 'mainfont=Noto Sans CJK SC'  # 设置主字体为思源黑体（Linux/Mac）
-        #     cjkmainfont = 'CJKmainfont=Noto Sans CJK SC'  # 设置CJK字体为思源黑体
+        if gu.get_platform() == 0:
+            # Windows平台配置
+            # pdf_engine = '--pdf-engine=wkhtmltopdf'  # 注释掉的备选引擎
+            mainfont = 'mainfont=SimSun'  # 设置主字体为宋体（Windows）
+            cjkmainfont = 'CJKmainfont=SimSun'  # 设置CJK（中日韩）字体为宋体
+        else:
+            # 非Windows平台配置（Linux/Mac）
+            # pdf_engine = '--pdf-engine=weasyprint'  # 注释掉的备选引擎
+            mainfont = 'mainfont=Noto Sans CJK SC'  # 设置主字体为思源黑体（Linux/Mac）
+            cjkmainfont = 'CJKmainfont=Noto Sans CJK SC'  # 设置CJK字体为思源黑体
 
-        # # 使用pypandoc转换文件为PDF格式
-        # pypandoc.convert_file(
-        #     filepath,  # 输入文件路径
-        #     output_format,  # 输出格式（'pdf'）
-        #     outputfile=output_file,  # 输出文件路径
-        #     format=input_format,  # 输入格式
-        #     extra_args=[  # 额外参数列表，传递给Pandoc
-        #         '--pdf-engine=xelatex',  # 指定使用xelatex引擎生成PDF（支持Unicode和字体嵌入）
-        #         '-V', mainfont,  # 设置LaTeX变量：主字体
-        #         '--variable', cjkmainfont,  # 设置LaTeX变量：CJK字体
-        #         '--resource-path', rt.get_root_thread_dir(),  # 设置资源查找路径（如图片、样式表等）
-        #     ],
-        #)
+        # 使用pypandoc转换文件为PDF格式
+        pypandoc.convert_file(
+            filepath,  # 输入文件路径
+            output_format,  # 输出格式（'pdf'）
+            outputfile=output_file,  # 输出文件路径
+            format=input_format,  # 输入格式
+            extra_args=[  # 额外参数列表，传递给Pandoc
+                '--pdf-engine=xelatex',  # 指定使用xelatex引擎生成PDF（支持Unicode和字体嵌入）
+                '-V', mainfont,  # 设置LaTeX变量：主字体
+                '--variable', cjkmainfont,  # 设置LaTeX变量：CJK字体
+                #'--resource-path', rt.get_root_thread_dir(),  # 设置资源查找路径（如图片、样式表等）
+            ],
+        )
     else:
         # 非PDF格式的转换（如html、docx、md等）
         pypandoc.convert_file(
@@ -66,4 +65,4 @@ def convert_file(filepath, output_format):
     return output_file
 
 
-convert_file('a.txt','docx')
+convert_file('RE.md','pdf')
