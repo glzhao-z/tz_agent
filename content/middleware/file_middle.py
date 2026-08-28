@@ -85,7 +85,7 @@ class FileMiddle(AgentMiddleware):
                 # 怎么工具返回中的内容
                 response.content = np(response.content).replace(cfg.ROOT_PATH_AGENT,'')
             # 消掉root_dir
-            return response
+        return response
 
 
 if __name__ == '__main__':
