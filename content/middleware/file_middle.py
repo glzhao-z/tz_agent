@@ -78,7 +78,7 @@ class FileMiddle(AgentMiddleware):
             return ToolMessage(content="工具调用异常",tool_call_id=uuid4().hex)
 
         # 边界情况1 判断工具的返回是否是ToolMessage：
-        if response and type(response)==ToolMessage:
+        if type(response)==ToolMessage:
             # 边界情况2 判断它是否有值且是字符串
             if response and response.content and type(response.content) is str:
                 # 边界情况3 要规划化路径字符串中的 分隔符 /
