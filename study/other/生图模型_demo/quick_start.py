@@ -1,20 +1,29 @@
 import requests
 from base import config
 import os
-url = "https://api.siliconflow.cn/v1/images/generations"
-payload = {
-    "model": "Kwai-Kolors/Kolors",
-    "prompt": "海边的风景",
-    "image_size": "1024x1024", # 图像大小
-    "batch_size": 1, # 批处理大小
-    "num_inference_steps": 20, # 推理步数
-    "guidance_scale": 7.5, # 指导尺度
-    #"image": "https://inews.gtimg.com/om_bt/Os3eJ8u3SgB3Kd-zrRRhgfR5hUvdwcVPKUTNO6O7sZfUwAA/641"
-}
-headers = {
-    "Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}",
-    "Content-Type": "application/json"
-}
-response = requests.post(url, json=payload, headers=headers)
-print(response.text)
-#{"images":[{"url":"https://s3.siliconflow.cn/temporary/None/fti_dy8nt86luaz1vt7l_53b2c9a4d47adf405846a6acef55c738_c2ecbbc0_b6f4bea5_00001_.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAXXXXFILESEXAMPLE%2F20260828%2Fcn-shanghai-1%2Fs3%2Faws4_request&X-Amz-Date=20260828T094736Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Security-Token=eyJhbGciOiJSUzI1NiIsImtpZCI6ImdyYXkiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiJmYWFzOmRlcDpvcHI6ZDI5Y3UzZ2gzdnZjNzNjNWJpNWc6ZDEyNjkiLCJpc3MiOiJodHRwczovL2lhbS5zaWxpY29uZmxvdy5jbiIsImlhdCI6MTc4NzkwMTQxMywiZXhwIjoxNzg4MDc0MjEzLCJ0eXAiOiJzZXJ2aWNlIiwiYXBsdCI6InNmOmZhYXM6ZmFicmljIiwidG50IjoiZDI5Y3UzZ2gzdnZjNzNjNWJpNWciLCJpZCI6ImRhOGpicGVjbm5jYzczZGU2dW1nIiwiYWNjZXNzIjpbeyJ0eXBlIjoiZmFhcyIsInN1YmplY3RJZCI6ImQyOWN1M2doM3Z2YzczYzViaTVnIiwiYWN0aW9ucyI6WyJmYWFzOmludm9jYXRpb246cHVsbGluZyJdfV19.ccelNUnMAjtdvOc5M6dVwYEgGRWD1YTW3IGjmvySc7Jb4xZOxbHkO8Ud--KCVhlNcd_TQYBMnQiwyXrhwohQiPGuX2gyg5RFiwuDIcLSqyaRiWx3ENCYRVP-FPenNX7auhQudRiDDbDwd_MlUo1q_7qnV9x-9WeEssiLoPuby7SGBJv9boUWEfRAu_ekgxZnsu4o4y9URKqH6LL0433a6VCGYcEZez9Z2-ArbZU4m1SueC15rsv65II-yZXOtIdqseIiv0rcQwTtK5Y_cTNyMDqTvEwyLmQqsw_qQ9lieDG4oZhUCrnaW-6VmbS-Q0LNE7L4hd2SgrGQwtW0b6XK8zf9Tqv2Vb25YhY8oPnC2zSh33TuNCwJEsHOHDaWtZyDzuE5F7-TDqiAzvTRZcrr4WXwKyAHZaZnv8XZTM8YmEBIUG1SjI_tryTUox5YbBz6xI__tC3spMtPXPsCRCmT92loqRU3ow0dXChnpkIxBspFTCV2NxPM3z8KHHGJGpvWk2R9smKSgLu0hnKV-6m9L1BXyZN4OCOREVbsOsIz4AFapLAhCFO9XKAD_PKiYWLJ3284GQmuVo5Yf7ja5FHfjujvuVwoOwjeuXnvLXpw-1g3DCU1wyMj5kCOhzQ1rBqvJRSJ-wfh7lt0bmuwKhPGVLmF2ieNSL7TjOVLnaEFMr4&X-Amz-Signature=0edafbdc78d453aa70c50ac6db5ecc16af89449726d9c2af4e7bacbea3fa83b0"}],"timings":{"inference":2.87},"seed":782021221,"shared_id":"0","data":[{"url":"https://s3.siliconflow.cn/temporary/None/fti_dy8nt86luaz1vt7l_53b2c9a4d47adf405846a6acef55c738_c2ecbbc0_b6f4bea5_00001_.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAXXXXFILESEXAMPLE%2F20260828%2Fcn-shanghai-1%2Fs3%2Faws4_request&X-Amz-Date=20260828T094736Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Security-Token=eyJhbGciOiJSUzI1NiIsImtpZCI6ImdyYXkiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiJmYWFzOmRlcDpvcHI6ZDI5Y3UzZ2gzdnZjNzNjNWJpNWc6ZDEyNjkiLCJpc3MiOiJodHRwczovL2lhbS5zaWxpY29uZmxvdy5jbiIsImlhdCI6MTc4NzkwMTQxMywiZXhwIjoxNzg4MDc0MjEzLCJ0eXAiOiJzZXJ2aWNlIiwiYXBsdCI6InNmOmZhYXM6ZmFicmljIiwidG50IjoiZDI5Y3UzZ2gzdnZjNzNjNWJpNWciLCJpZCI6ImRhOGpicGVjbm5jYzczZGU2dW1nIiwiYWNjZXNzIjpbeyJ0eXBlIjoiZmFhcyIsInN1YmplY3RJZCI6ImQyOWN1M2doM3Z2YzczYzViaTVnIiwiYWN0aW9ucyI6WyJmYWFzOmludm9jYXRpb246cHVsbGluZyJdfV19.ccelNUnMAjtdvOc5M6dVwYEgGRWD1YTW3IGjmvySc7Jb4xZOxbHkO8Ud--KCVhlNcd_TQYBMnQiwyXrhwohQiPGuX2gyg5RFiwuDIcLSqyaRiWx3ENCYRVP-FPenNX7auhQudRiDDbDwd_MlUo1q_7qnV9x-9WeEssiLoPuby7SGBJv9boUWEfRAu_ekgxZnsu4o4y9URKqH6LL0433a6VCGYcEZez9Z2-ArbZU4m1SueC15rsv65II-yZXOtIdqseIiv0rcQwTtK5Y_cTNyMDqTvEwyLmQqsw_qQ9lieDG4oZhUCrnaW-6VmbS-Q0LNE7L4hd2SgrGQwtW0b6XK8zf9Tqv2Vb25YhY8oPnC2zSh33TuNCwJEsHOHDaWtZyDzuE5F7-TDqiAzvTRZcrr4WXwKyAHZaZnv8XZTM8YmEBIUG1SjI_tryTUox5YbBz6xI__tC3spMtPXPsCRCmT92loqRU3ow0dXChnpkIxBspFTCV2NxPM3z8KHHGJGpvWk2R9smKSgLu0hnKV-6m9L1BXyZN4OCOREVbsOsIz4AFapLAhCFO9XKAD_PKiYWLJ3284GQmuVo5Yf7ja5FHfjujvuVwoOwjeuXnvLXpw-1g3DCU1wyMj5kCOhzQ1rBqvJRSJ-wfh7lt0bmuwKhPGVLmF2ieNSL7TjOVLnaEFMr4&X-Amz-Signature=0edafbdc78d453aa70c50ac6db5ecc16af89449726d9c2af4e7bacbea3fa83b0"}],"created":1787910457}
+import httpx
+
+def generate_image(prompt,out_path):
+    url = "https://api.siliconflow.cn/v1/images/generations"
+    payload = {
+        "model": "Kwai-Kolors/Kolors",
+        "prompt": prompt,
+        "image_size": "1024x1024", # 图像大小
+        "batch_size": 1, # 批处理大小
+        "num_inference_steps": 20, # 推理步数
+        "guidance_scale": 7.5, # 指导尺度
+        #"image": "https://inews.gtimg.com/om_bt/Os3eJ8u3SgB3Kd-zrRRhgfR5hUvdwcVPKUTNO6O7sZfUwAA/641"
+    }
+    headers = {
+        "Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}",
+        "Content-Type": "application/json"
+    }
+    response = requests.post(url, json=payload, headers=headers)
+    d = response.json()
+    url = d['images'][0]['url']
+    with httpx.Client() as client:
+        response = client.get(url)
+        with open(out_path, 'wb') as f:
+            f.write(response.content)
+
+generate_image("二次元狗","dog.png")
