@@ -71,12 +71,16 @@ class FileMiddle(AgentMiddleware):
                 # 把root_dir添加上
                 # /a.txt ->  /agent_files/a.txt
                 request.tool_call['args'][arg_key] = self.change_file_path(request.tool_call['args'][arg_key])
+        try:
+            response = await handler(request) # 调用工具
+        except:
+            logger.error("工具调用异常")
+            return ToolMessage(content="工具调用异常",tool_call_id=uuid4().hex)
 
-        response = await handler(request) # 调用工具
         # 边界情况1 判断工具的返回是否是ToolMessage：
-        if type(response)==ToolMessage:
+        if response and type(response)==ToolMessage:
             # 边界情况2 判断它是否有值且是字符串
-            if response.content and type(response.content) is str:
+            if response and response.content and type(response.content) is str:
                 # 边界情况3 要规划化路径字符串中的 分隔符 /
                 # 怎么工具返回中的内容
                 response.content = np(response.content).replace(cfg.ROOT_PATH_AGENT,'')

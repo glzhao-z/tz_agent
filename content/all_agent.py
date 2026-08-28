@@ -2,7 +2,7 @@ from deepagents import create_deep_agent
 from conn.llm import get_small_llm as get_llm
 from base import config as cfg
 from content.mytools import globle_tools as gt,read_doc_tools,write_doc_tools
-from content.middleware import file_middle,minio_middle
+from content.middleware import file_middle,minio_middle,rate_limit_middle
 from deepagents.backends import FilesystemBackend
 
 class AllAgent():
@@ -17,9 +17,14 @@ class AllAgent():
 
         self.agent  = create_deep_agent(model=get_llm(),#模型
                      tools=self.get_tools(),#工具列表
-                     middleware=[file_middle.FileMiddle(),minio_middle.MinioMiddle()],
+                     middleware=self.get_middles(),
                      system_prompt=system_prompt,
                      backend=FilesystemBackend(root_dir=cfg.ROOT_PATH_AGENT,virtual_mode=True))#系统提示词
+
+    def get_middles(self):
+        return [file_middle.FileMiddle(),
+                minio_middle.MinioMiddle(),
+            rate_limit_middle.anti_rate_limit]
 
 
     def get_tools(self):
