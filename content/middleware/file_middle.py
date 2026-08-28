@@ -1,3 +1,5 @@
+import os.path
+
 from langchain.agents.middleware import AgentState,AgentMiddleware
 from langchain.messages import ToolMessage
 from utils.doc_utils import os_utils as ou
@@ -10,6 +12,7 @@ from os.path import normpath as np
 
 class FileState(AgentState):
     before_paths:set
+    upload_files:list
 
 # 1. 初始化
 # 2. 更新
@@ -17,6 +20,19 @@ class FileState(AgentState):
 class FileMiddle(AgentMiddleware):
 
     state_schema = FileState
+    def before_agent(self,state,runtime):
+        logger.info(state['upload_files'])
+        dir = cfg.ROOT_PATH_AGENT+ '/user_upload'
+        os.makedirs(dir, exist_ok=True) # 创建目录
+        # 获取代表文件的数据
+        for file in state['upload_files']:
+            # 获取每个文件的base64字符串及文件名
+            file_base64 = file['data']
+            file_name = file['metadata']['filename']
+            file_path = os.path.join(dir, file_name)
+            # 解码并保存
+            base64_utils.decode_file(file_base64, file_path)
+
 
     def before_model(self, state,runtime):
         # 把目录结构添加到上下文
