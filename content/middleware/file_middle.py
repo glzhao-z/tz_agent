@@ -23,14 +23,16 @@ class FileMiddle(AgentMiddleware):
     async def abefore_agent(self,state,runtime):
         dir = os.path.join(cfg.ROOT_PATH_AGENT, cfg.USER_UPLOAD_PATH)
         await asyncio.to_thread(os.makedirs,dir, exist_ok=True) # 创建目录
-        # 获取代表文件的数据
-        for file in state['upload_files']:
-            # 获取每个文件的base64字符串及文件名
-            file_base64 = file['data']
-            file_name = file['metadata']['filename']
-            file_path = os.path.join(dir, file_name)
-            # 解码并保存
-            await asyncio.to_thread(base64_utils.decode_file,file_base64, file_path)
+        # 判断是否有上传的文件
+        if state.get('upload_files'):
+            # 获取代表文件的数据
+            for file in state['upload_files']:
+                # 获取每个文件的base64字符串及文件名
+                file_base64 = file['data']
+                file_name = file['metadata']['filename']
+                file_path = os.path.join(dir, file_name)
+                # 解码并保存
+                await asyncio.to_thread(base64_utils.decode_file,file_base64, file_path)
 
 
     def before_model(self, state,runtime):
