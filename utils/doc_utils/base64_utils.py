@@ -14,3 +14,10 @@ def decode_file(encoded_str,output_path):
     with open(output_path,'wb') as f:
         f.write(data)
 
+
+# 把base64字符串加上表示图片的前缀
+def get_base64_uri(img_path):
+    encoded_str = encode_file(img_path)
+    return "data:image/png;base64," + encoded_str
+
+
