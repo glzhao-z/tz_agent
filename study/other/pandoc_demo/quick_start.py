@@ -48,9 +48,11 @@ def convert_file(filepath, output_format):
                 '--pdf-engine=xelatex',  # 指定使用xelatex引擎生成PDF（支持Unicode和字体嵌入）
                 '-V', mainfont,  # 设置LaTeX变量：主字体
                 '--variable', cjkmainfont,  # 设置LaTeX变量：CJK字体
-                #'--resource-path', rt.get_root_thread_dir(),  # 设置资源查找路径（如图片、样式表等）
+                '--resource-path','.',   # 设置资源查找路径（如图片、样式表等）
             ],
         )
+
+
     else:
         # 非PDF格式的转换（如html、docx、md等）
         pypandoc.convert_file(
