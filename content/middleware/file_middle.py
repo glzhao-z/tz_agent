@@ -51,6 +51,9 @@ class FileMiddle(AgentMiddleware):
 
     def change_file_path(self,filepath):
         filepath = os.path.normpath(filepath)  # 规范化路径,把'\'给规范化成os.sep
+        if cfg.ROOT_PATH_AGENT in filepath: # 如果路径本身就包含了根目录，则直接返回
+            return filepath
+
         if os.path.isabs(filepath):  # isabs是判断这个路径是否是绝对路径，绝对路径的特征就是前面会有个/
             # relpath就是路径相对化，把绝对路径变成相对路径，其实也就是 去掉 start 的字符串
             filepath = os.path.relpath(filepath, start=os.sep)  # os.sep是一个规划话的分隔符 \
@@ -62,7 +65,7 @@ class FileMiddle(AgentMiddleware):
     # 如果包含root_dir，就消掉即可。
     async def awrap_tool_call(self,request,handler):
 
-        # 在request里找到路径相关的参数
+        # # 在request里找到路径相关的参数
         for arg_key in request.tool_call['args']:
             if arg_key in ['filepath']:
                 # 把root_dir添加上
