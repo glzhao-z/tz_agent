@@ -1,7 +1,7 @@
 from deepagents import create_deep_agent
 from conn.llm import get_small_llm as get_llm
 from base import config as cfg
-from content.mytools import globle_tools as gt,read_doc_tools
+from content.mytools import globle_tools as gt,read_doc_tools,write_doc_tools
 from content.middleware import file_middle,minio_middle
 from deepagents.backends import FilesystemBackend
 
@@ -12,6 +12,7 @@ class AllAgent():
         system_prompt = """
         你是个功能强大的助手，
         word,pdf,ppt,excel等文件优先使用get_file_content工具
+        如果要写word或者pdf之类的可以先写md，然后通过convert_file工具转换
         """
 
         self.agent  = create_deep_agent(model=get_llm(),#模型
@@ -24,7 +25,8 @@ class AllAgent():
     def get_tools(self):
         return [gt.run_command,
                 gt.get_current_time,
-                read_doc_tools.get_file_content]
+                read_doc_tools.get_file_content,
+                write_doc_tools.convert_file]
 
 
 

@@ -51,8 +51,6 @@ def convert_file(filepath, output_format):
                 '--resource-path','.',   # 设置资源查找路径（如图片、样式表等）
             ],
         )
-
-
     else:
         # 非PDF格式的转换（如html、docx、md等）
         pypandoc.convert_file(
