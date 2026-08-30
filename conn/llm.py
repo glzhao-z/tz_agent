@@ -12,6 +12,12 @@ def get_small_llm():
                      model='Qwen/Qwen3.5-27B')
     return llm
 
+def get_vlm():
+    vlm = ChatOpenAI(base_url=cfg.MODEL_API_BASE_URL,
+                     model=cfg.BASE_VLM,
+                    )
+    return vlm
+
 
 if __name__ == '__main__':
     l = get_llm()

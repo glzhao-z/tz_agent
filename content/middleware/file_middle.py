@@ -9,14 +9,13 @@ from utils.general_utils.loggers import logger
 from os.path import normpath as np
 
 
-
 class FileState(AgentState):
     before_paths:set
     upload_files:list
+    paths_dict:dict
 
 # 1. 初始化
 # 2. 更新
-
 class FileMiddle(AgentMiddleware):
 
     state_schema = FileState
@@ -33,6 +32,8 @@ class FileMiddle(AgentMiddleware):
                 file_path = os.path.join(dir, file_name)
                 # 解码并保存
                 await asyncio.to_thread(base64_utils.decode_file,file_base64, file_path)
+
+
 
 
     def before_model(self, state,runtime):
@@ -83,6 +84,7 @@ class FileMiddle(AgentMiddleware):
             if response and response.content and type(response.content) is str:
                 # 边界情况3 要规划化路径字符串中的 分隔符 /
                 # 怎么工具返回中的内容
+                # /agent_files/a.txt -> /a.txt
                 response.content = np(response.content).replace(cfg.ROOT_PATH_AGENT,'')
             # 消掉root_dir
         return response
