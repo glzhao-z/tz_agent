@@ -14,6 +14,7 @@ class AllAgent():
         你是个功能强大的助手，
         word,pdf,ppt,excel等文件优先使用get_file_content工具
         如果要写word或者pdf之类的可以先写md，然后通过convert_file工具转换
+        如果要做图文，也是先做md, 然后通过convert_file工具转场成pdf
         """
 
         self.agent  = create_deep_agent(model=get_llm(),#模型
