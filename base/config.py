@@ -8,6 +8,7 @@ USER_UPLOAD_PATH = os.path.normpath('user_upload') # 用户上传文件存储路
 BASE_LLM = os.getenv("BASE_LLM") # 从环境变量中获取模型
 MODEL_API_BASE_URL = os.getenv("MODEL_API_BASE_URL") # 从环境变量中获取base_url
 BASE_VLM = os.getenv("BASE_VLM") # 从环境变量中获取基础VLM
+IMAGE_MODEL = os.getenv("IMAGE_MODEL") # 从环境变量中获取图像模型
 
 LOG_DIR = os.path.dirname(__file__) # 当前脚本所在目录
 NEED_CONSOLE_LOG = False # 日志是否打印到控制台
