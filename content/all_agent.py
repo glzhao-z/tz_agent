@@ -2,7 +2,7 @@ from deepagents import create_deep_agent
 from conn.llm import get_llm
 from base import config as cfg
 from content.mytools import globle_tools as gt,read_doc_tools,write_doc_tools
-from content.mytools import vlm_tool
+from content.mytools import vlm_tool,gen_image
 from content.middleware import file_middle,minio_middle,rate_limit_middle
 from deepagents.backends import FilesystemBackend
 
@@ -33,9 +33,8 @@ class AllAgent():
                 gt.get_current_time,
                 read_doc_tools.get_file_content,
                 write_doc_tools.convert_file,
-                vlm_tool.read_image]
-
-
+                vlm_tool.read_image,
+                gen_image.generate_image]
 
 if __name__ == '__main__':
     from utils.langchain_utils import stream_util as su
