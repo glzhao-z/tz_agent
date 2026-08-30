@@ -30,7 +30,7 @@ class AllAgent():
 
 
     def get_tools(self):
-        return [gt.run_command,
+        return [#gt.run_command,
                 gt.get_current_time,
                 read_doc_tools.get_file_content,
                 write_doc_tools.convert_file,
