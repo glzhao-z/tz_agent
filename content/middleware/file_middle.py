@@ -68,15 +68,18 @@ class FileMiddle(AgentMiddleware):
 
         # # 在request里找到路径相关的参数
         for arg_key in request.tool_call['args']:
-            if arg_key in ['filepath']:
+            if arg_key in ['filepath','image_path']:
                 # 把root_dir添加上
                 # /a.txt ->  /agent_files/a.txt
                 request.tool_call['args'][arg_key] = self.change_file_path(request.tool_call['args'][arg_key])
-        try:
-            response = await handler(request) # 调用工具
-        except:
-            logger.error("工具调用异常")
-            return ToolMessage(content="工具调用异常",tool_call_id=uuid4().hex)
+        #try:
+        response = await handler(request) # 调用工具
+        # except:
+        #     # 把错误信息打印出来
+        #
+        #
+        #     logger.error("工具调用异常")
+        #     return ToolMessage(content="工具调用异常",tool_call_id=uuid4().hex)
 
         # 边界情况1 判断工具的返回是否是ToolMessage：
         if type(response)==ToolMessage:
