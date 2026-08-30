@@ -2,6 +2,7 @@ from conn.llm import get_llm
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain.agents import create_agent
 
+# 1. 定义mcp服务地址
 client = MultiServerMCPClient(
     {
         "demo": {
@@ -12,7 +13,12 @@ client = MultiServerMCPClient(
 )
 
 async def do():
+
+    # 2. 得到mcp提供工具
     tools = await client.get_tools()# 获取MCP工具
+
+
+    # 3. 工具传入agent
     agent = create_agent(
         get_llm(),
         tools=tools
