@@ -3,6 +3,7 @@ from conn.llm import get_llm
 from base import config as cfg
 from content.mytools import globle_tools as gt,read_doc_tools,write_doc_tools
 from content.mytools import vlm_tool,gen_image
+from content.mcps import traliy_search
 from content.middleware import file_middle,minio_middle,rate_limit_middle
 from deepagents.backends import FilesystemBackend
 
@@ -12,9 +13,10 @@ class AllAgent():
 
         system_prompt = """
         你是个功能强大的助手，
-        word,pdf,ppt,excel等文件优先使用get_file_content工具
-        如果要写word或者pdf之类的可以先写md，然后通过convert_file工具转换
-        如果要做图文，也是先做md, 然后通过convert_file工具转场成pdf
+        word,pdf,ppt,excel等文件优先使用get_file_content工具,
+        如果要写word或者pdf之类的可以先写md，然后通过convert_file工具转换,
+        如果要做图文，也是先做md, 然后通过convert_file工具转场成pdf,
+        如果要搜新闻，用get_current_time工具确认一下当前的日子
         """
 
         self.agent  = create_deep_agent(model=get_llm(),#模型
@@ -35,7 +37,8 @@ class AllAgent():
                 read_doc_tools.get_file_content,
                 write_doc_tools.convert_file,
                 vlm_tool.read_image,
-                gen_image.generate_image]
+                gen_image.generate_image,
+                ] + traliy_search.get_tools()
 
 if __name__ == '__main__':
     from utils.langchain_utils import stream_util as su
