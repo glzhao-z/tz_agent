@@ -2,6 +2,7 @@ from deepagents import create_deep_agent
 from conn.llm import get_llm
 from base import config as cfg
 from content.mytools import globle_tools as gt,read_doc_tools,write_doc_tools
+from content.mytools import vlm_tool
 from content.middleware import file_middle,minio_middle,rate_limit_middle
 from deepagents.backends import FilesystemBackend
 
@@ -19,7 +20,7 @@ class AllAgent():
                      tools=self.get_tools(),#工具列表
                      middleware=self.get_middles(),
                      system_prompt=system_prompt,
-                     backend=FilesystemBackend(root_dir=cfg.ROOT_PATH_AGENT,virtual_mode=T))#系统提示词
+                     backend=FilesystemBackend(root_dir=cfg.ROOT_PATH_AGENT,virtual_mode=True))#系统提示词
 
     def get_middles(self):
         return [file_middle.FileMiddle(),
@@ -31,7 +32,8 @@ class AllAgent():
         return [gt.run_command,
                 gt.get_current_time,
                 read_doc_tools.get_file_content,
-                write_doc_tools.convert_file]
+                write_doc_tools.convert_file,
+                vlm_tool.read_image]
 
 
 
