@@ -68,7 +68,7 @@ class FileMiddle(AgentMiddleware):
 
         # # 在request里找到路径相关的参数
         for arg_key in request.tool_call['args']:
-            if arg_key in ['filepath','image_path']:
+            if arg_key in ['filepath','image_path','ref_image_path']:
                 # 把root_dir添加上
                 # /a.txt ->  /agent_files/a.txt
                 request.tool_call['args'][arg_key] = self.change_file_path(request.tool_call['args'][arg_key])

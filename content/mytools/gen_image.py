@@ -18,8 +18,11 @@ def generate_image(prompt,image_size,ref_image_path=None):
     :return: 生成的图片路径
     """
     url = gen_img.generate_image(prompt,image_size,ref_image_path)
+    image_dir = os.path.join(cfg.ROOT_PATH_AGENT,cfg.GENERATE_IMAGE_DIR)
+    os.makedirs(image_dir, exist_ok=True)
+
     # 当我们需要一个不重复的字符串时，就可以使用uuid
-    out_path = os.path.join(cfg.GENERATE_IMAGE_DIR, uuid.uuid4().hex + '.png')
+    out_path = os.path.join(image_dir, uuid.uuid4().hex + '.png')
     # 下载图片
     download_file(url,out_path)
     return out_path
