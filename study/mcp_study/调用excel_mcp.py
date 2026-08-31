@@ -31,3 +31,14 @@ async def run_agent():
 
 import asyncio
 asyncio.run(run_agent())
+
+
+# uvx excel-mcp-server stdio
+
+# pip install excel-mcp-server
+
+# a.py
+# import excel-mcp-server
+# app.run(stdio)
+
+# python a.py

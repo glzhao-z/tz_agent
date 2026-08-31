@@ -3,7 +3,7 @@ from conn.llm import get_llm
 from base import config as cfg
 from content.mytools import globle_tools as gt,read_doc_tools,write_doc_tools
 from content.mytools import vlm_tool,gen_image
-from content.mcps import traliy_search
+from content.mcps import traliy_search,excel_mcp
 from content.middleware import file_middle,minio_middle,rate_limit_middle
 from deepagents.backends import FilesystemBackend
 
@@ -38,7 +38,7 @@ class AllAgent():
                 write_doc_tools.convert_file,
                 vlm_tool.read_image,
                 gen_image.generate_image,
-                ] + traliy_search.get_tools()
+                ] + traliy_search.get_tools() + excel_mcp.get_tools()
 
 if __name__ == '__main__':
     from utils.langchain_utils import stream_util as su
