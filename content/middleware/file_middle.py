@@ -50,6 +50,7 @@ class FileMiddle(AgentMiddleware):
             return {'messages':[ToolMessage(content=f'当前目录结构如下:\n{dir_str}',tool_call_id=uuid4().hex)],
                     'before_paths':current_paths} # 更新目录结构记录
 
+
     def change_file_path(self,filepath):
         filepath = os.path.normpath(filepath)  # 规范化路径,把'\'给规范化成os.sep
         if cfg.ROOT_PATH_AGENT in filepath: # 如果路径本身就包含了根目录，则直接返回

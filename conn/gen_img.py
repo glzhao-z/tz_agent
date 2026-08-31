@@ -25,3 +25,4 @@ def generate_image(prompt,image_size,ref_image_path=None):
     url = d['images'][0]['url']
     return url
 
+generate_image("A beautiful landscape painting", "1024x1024")
