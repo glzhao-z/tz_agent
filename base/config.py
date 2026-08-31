@@ -25,3 +25,7 @@ MINIO_SECRET_KEY = os.getenv("MINIO_SECRET_KEY")
 MINIO_BUCKET_NAME = 'agent-files'
 
 TAVILY_SEARCH_KEY = os.getenv('TAVILY_SEARCH_KEY')
+
+
+USE_EXCEL = True if os.getenv("USE_EXCEL")=='true' else False
+USE_MINIO = True if os.getenv("USE_MINIO")=='true' else False

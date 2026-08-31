@@ -15,8 +15,8 @@ class AllAgent():
 
         system_prompt = f"""
         你是个功能强大的助手，
-        做excel用excel-agent子代理。
-        {cfg.USER_UPLOAD_PATH}文件夹是用户上传文件的文件夹。
+        {'做excel用excel-agent子代理。' if cfg.USE_EXCEL else ''}
+        {cfg.USER_UPLOAD_PATH}文件夹是用户上传文件的文件夹, 不要在这个文件夹下创建新文件。
         读取word,pdf,ppt,excel等文件优先使用get_file_content工具,
         如果要写word或者pdf之类的可以先写md，然后通过convert_file工具转换,
         如果要做图文，也是先做md, 然后通过convert_file工具转场成pdf, 要特别注意图片引用路径
@@ -27,13 +27,22 @@ class AllAgent():
                      tools=self.get_tools(),#工具列表
                      middleware=self.get_middles(),
                      system_prompt=system_prompt,
-                     subagents=[excel_agent.get_agent()],
+                     subagents=self.get_subagents(),
                      backend=FilesystemBackend(root_dir=cfg.ROOT_PATH_AGENT,virtual_mode=True))#系统提示词
 
+    def get_subagents(self):
+        if cfg.USE_EXCEL:
+            return [excel_agent.get_agent()]
+        else:
+            return []
+
+
+
     def get_middles(self):
-        return [file_middle.FileMiddle(),
-                minio_middle.MinioMiddle(),
-            rate_limit_middle.anti_rate_limit]
+        middles = [file_middle.FileMiddle(),rate_limit_middle.anti_rate_limit]
+        if cfg.USE_MINIO:
+            middles.append(minio_middle.MinioMiddle())
+        return middles
 
 
     def get_tools(self):
