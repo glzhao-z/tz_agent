@@ -6,8 +6,8 @@ agent = create_deep_agent(
     model=get_llm(),
     tools=[],
     system_prompt="",
-    skills = ["/agent_files/skills"],
-    backend=FilesystemBackend(root_dir="/", virtual_mode=True)
+    skills = ["/skills"],
+    backend=FilesystemBackend(root_dir="/agent_files", virtual_mode=True)
 )
 
 for chunk in agent.stream({"messages":[{"role":"user","content":"用技能计算3+2"}]}):
