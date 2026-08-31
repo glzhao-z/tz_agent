@@ -1,4 +1,6 @@
 from deepagents import create_deep_agent
+from openai.types.beta import assistant_deleted
+
 from conn.llm import get_llm
 from base import config as cfg
 from content.mytools import globle_tools as gt,read_doc_tools,write_doc_tools
@@ -35,8 +37,6 @@ class AllAgent():
             return [excel_agent.get_agent()]
         else:
             return []
-
-
 
     def get_middles(self):
         middles = [file_middle.FileMiddle(),rate_limit_middle.anti_rate_limit]
