@@ -1,6 +1,7 @@
 from conn.llm import get_llm
-from langchain.agents import create_agent
+from deepagents import create_deep_agent
 from langchain_mcp_adapters.client import MultiServerMCPClient
+from deepagents.backends import FilesystemBackend
 import os
 
 # 1. 定义mcp服务地址
@@ -18,11 +19,15 @@ import asyncio
 tools = asyncio.run(client.get_tools())
 print(tools)
 
-agent = create_agent(
+agent = create_deep_agent(
         get_llm(),
-        tools=tools
+        tools=tools,
+        backend=FilesystemBackend(root_dir='/agent_files',virtual_mode=True),
     )
 
 async def run_agent():
     async for chunk in agent.astream({"messages": [{"role": "user", "content": "随便做个极简的excel示例"}]}):
         print(chunk)
+
+import asyncio
+asyncio.run(run_agent())
