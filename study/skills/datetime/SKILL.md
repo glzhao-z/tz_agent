@@ -1,6 +1,7 @@
 ---
 name: datetime
 description: 获得当前时间的技能
+allowed-tools: execute
 ---
 
 # datetime

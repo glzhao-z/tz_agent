@@ -1,11 +1,13 @@
 import os.path
 from langchain.agents.middleware import AgentMiddleware
-from base import config as cfg
 import subprocess
 import re
+#from langchain.tools import tool
+
+ROOT_PATH_AGENT = os.path.normpath('/agent_files')
 
 
-def execute(command: str):
+def run_command(command: str):
     """
     运行终端命令
     :param command: 命令
@@ -20,17 +22,17 @@ def execute(command: str):
     return s
 
 class ExecuteMiddle(AgentMiddleware):
-    tools = [execute]
+    tools = [run_command]
 
     def change_file_path(self,filepath):
         filepath = os.path.normpath(filepath)  # 规范化路径,把'\'给规范化成os.sep
-        if cfg.ROOT_PATH_AGENT in filepath: # 如果路径本身就包含了根目录，则直接返回
+        if ROOT_PATH_AGENT in filepath: # 如果路径本身就包含了根目录，则直接返回
             return filepath
 
         if os.path.isabs(filepath):  # isabs是判断这个路径是否是绝对路径，绝对路径的特征就是前面会有个/
             # relpath就是路径相对化，把绝对路径变成相对路径，其实也就是 去掉 start 的字符串
             filepath = os.path.relpath(filepath, start=os.sep)  # os.sep是一个规划话的分隔符 \
-        p = os.path.join(cfg.ROOT_PATH_AGENT, filepath)
+        p = os.path.join(ROOT_PATH_AGENT, filepath)
         return p
 
     def get_path_from_command(self, command):
@@ -42,7 +44,7 @@ class ExecuteMiddle(AgentMiddleware):
     # 如果包含root_dir，就消掉即可。
     async def awrap_tool_call(self,request,handler):
         # 1. 先识别出它是终端命令这个工具
-        if request.tool_call.get('name') == 'execute':
+        if request.tool_call.get('name') == 'run_command':
             # 2. 得到command参数
             command = request.tool_call['args'].get('command')
             # 3. 用正则把command参数中找到路径相关的字符串
