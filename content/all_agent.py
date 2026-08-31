@@ -6,26 +6,28 @@ from content.mytools import vlm_tool,gen_image
 from content.mcps import traliy_search,excel_mcp
 from content.middleware import file_middle,minio_middle,rate_limit_middle
 from deepagents.backends import FilesystemBackend
+from content.subagents import excel_agent
+
 
 class AllAgent():
 
     def __init__(self):
 
-        system_prompt = """
+        system_prompt = f"""
         你是个功能强大的助手，
-        做excel用excel_mcp里的工具，
+        做excel用excel-agent子代理。
+        {cfg.USER_UPLOAD_PATH}文件夹是用户上传文件的文件夹。
         读取word,pdf,ppt,excel等文件优先使用get_file_content工具,
         如果要写word或者pdf之类的可以先写md，然后通过convert_file工具转换,
         如果要做图文，也是先做md, 然后通过convert_file工具转场成pdf, 要特别注意图片引用路径
         如果要搜新闻，用get_current_time工具确认一下当前的日子.
-        
-        
         """
 
         self.agent  = create_deep_agent(model=get_llm(),#模型
                      tools=self.get_tools(),#工具列表
                      middleware=self.get_middles(),
                      system_prompt=system_prompt,
+                     subagents=[excel_agent.get_agent()],
                      backend=FilesystemBackend(root_dir=cfg.ROOT_PATH_AGENT,virtual_mode=True))#系统提示词
 
     def get_middles(self):
@@ -41,7 +43,7 @@ class AllAgent():
                 write_doc_tools.convert_file,
                 vlm_tool.read_image,
                 gen_image.generate_image,
-                ] + traliy_search.get_tools() + excel_mcp.get_tools()
+                ] + traliy_search.get_tools()
 
 if __name__ == '__main__':
     from utils.langchain_utils import stream_util as su

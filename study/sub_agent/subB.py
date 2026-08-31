@@ -1,6 +1,9 @@
 from conn.llm import get_llm
 from langchain.tools import tool
 
+from content.middleware import minio_middle
+
+
 @ tool
 def get_random_number():
     """
