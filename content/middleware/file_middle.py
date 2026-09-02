@@ -20,6 +20,16 @@ class FileMiddle(AgentMiddleware):
 
     state_schema = FileState
     async def abefore_agent(self,state,runtime):
+        # 初始化skills文件夹
+        # 判断如果他存在，则不复制(可以不写，因为shutil内部自然有处理)
+        # if not os.path.exists(dst+'/skills'):
+        # 复制文件夹是线程阻塞动作，所以用asyncio.to_thread
+        src = os.path.join('content',cfg.SKILLS_DIR)
+        dst = os.path.join(cfg.ROOT_PATH_AGENT,cfg.SKILLS_DIR)
+        await asyncio.to_thread(ou.copy_folder,src,dst)
+
+
+        # 处理上传的文件
         dir = os.path.join(cfg.ROOT_PATH_AGENT, cfg.USER_UPLOAD_PATH)
         await asyncio.to_thread(os.makedirs,dir, exist_ok=True) # 创建目录
         # 判断是否有上传的文件

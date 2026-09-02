@@ -5,6 +5,7 @@ load_dotenv()  # 默认加载启动时当前目录下的 .env 文件 (可有可�
 ROOT_PATH_AGENT = os.path.normpath('/agent_files') # 默认代理文件存储路径
 USER_UPLOAD_PATH = 'user_upload' # 用户上传文件存储路径
 GENERATE_IMAGE_DIR = 'generate_image' # 生成图像文件存储路径
+SKILLS_DIR = 'skills' # 技能文件存储路径
 
 BASE_LLM = os.getenv("BASE_LLM") # 从环境变量中获取模型
 MODEL_API_BASE_URL = os.getenv("MODEL_API_BASE_URL") # 从环境变量中获取base_url

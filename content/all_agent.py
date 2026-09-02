@@ -1,6 +1,4 @@
 from deepagents import create_deep_agent
-from openai.types.beta import assistant_deleted
-
 from conn.llm import get_llm
 from base import config as cfg
 from content.mytools import globle_tools as gt,read_doc_tools,write_doc_tools
@@ -40,7 +38,7 @@ class AllAgent():
                      tools=self.get_tools(),#工具列表
                      middleware=self.get_middles(),
                      system_prompt=system_prompt,
-                     skills=[''],
+                     skills=[cfg.SKILLS_DIR],
                      subagents=self.get_subagents(),
                      backend=FilesystemBackend(root_dir=cfg.ROOT_PATH_AGENT,virtual_mode=True))#系统提示词
 
