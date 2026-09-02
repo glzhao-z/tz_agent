@@ -15,8 +15,9 @@ from content.subagents import excel_agent
 # 1. 启动项目时直接复制，或者before_agent
 # 2. 做一个文件夹复制的工具脚本
 
-
 # 1.2 如何确保skill-creator产生的技能自动出现于agent_files/skills工作目录中
+# 修改技能本身
+# 当一个skill没有按照预期去完成任务的话，我们该怎么办
 
 
 
