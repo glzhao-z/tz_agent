@@ -21,8 +21,23 @@ if __name__ == '__main__':
 1.2 运行docker build命令
 docker build -t hellohello .
 
+docker run -d -p 8000:8000 hellohello . 
 
 2. 再通过镜像实例化容器。
 
 3. 运行容器。
+
+key: value  # 键值对
+list: # 列表
+  - item1
+  - item2
+nested: # 嵌套字典
+  child: value
+
+{
+    'key':'value',
+    'list':['item1','item2'],
+    'nested':{'child':'value'}
+
+}
 '''

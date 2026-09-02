@@ -1,0 +1,6 @@
+services:
+  hello23:
+    image: hellohello:latest
+    ports:
+      - 8000:8000
+
