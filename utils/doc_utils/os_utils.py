@@ -1,5 +1,6 @@
 
 import os
+import shutil
 
 # 递归获取每个文件的修改时间取最晚的那个时间返回
 def get_latest_modification_time(directory):
@@ -114,12 +115,13 @@ def list_directory(path, indent=''):
         return f'{indent}[权限不足]'
 
 
-
-
+# 复制一个文件夹
+def copy_folder(src, dst):
+    shutil.copytree(src, dst, dirs_exist_ok=True)
 
 
 if __name__ == "__main__":
-    a = {'a/b.txt','a/c.txt','D/d.txt','e/d.txt'}
-    b = {'D/d.txt','a/b.txt','a/c.txt'}
-    print(a==b)
+    src = r'D:\workspace\pythonworkspace\projects\normal\all_agent_study2\study\sub_agent'
+    dst = r'D:\workspace\pythonworkspace\projects\normal\all_agent_study2\study\sub_agent_copy'
+    copy_folder(src,dst)
 

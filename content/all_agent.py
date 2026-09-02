@@ -11,6 +11,17 @@ from deepagents.backends import FilesystemBackend
 from content.subagents import excel_agent
 
 
+# 接入skill需求1
+# 1.1 如果把skill-creator放于agent工作目录中
+# 启动项目时，复制代码中的skill-creator文件夹到agent工作目录中
+# 1. 启动项目时直接复制，或者before_agent
+# 2. 做一个文件夹复制的工具脚本
+
+
+# 1.2 如何确保skill-creator产生的技能自动出现于agent工作目录中
+
+
+
 class AllAgent():
 
     def __init__(self):
@@ -29,6 +40,7 @@ class AllAgent():
                      tools=self.get_tools(),#工具列表
                      middleware=self.get_middles(),
                      system_prompt=system_prompt,
+                     skills=[''],
                      subagents=self.get_subagents(),
                      backend=FilesystemBackend(root_dir=cfg.ROOT_PATH_AGENT,virtual_mode=True))#系统提示词
 
