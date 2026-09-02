@@ -3,8 +3,8 @@ from conn.llm import get_llm
 from base import config as cfg
 from content.mytools import globle_tools as gt,read_doc_tools,write_doc_tools
 from content.mytools import vlm_tool,gen_image
-from content.mcps import traliy_search,excel_mcp
-from content.middleware import file_middle,minio_middle,rate_limit_middle
+from content.mcps import traliy_search
+from content.middleware import file_middle,minio_middle,rate_limit_middle,excute_middle
 from deepagents.backends import FilesystemBackend
 from content.subagents import excel_agent
 
@@ -16,7 +16,7 @@ from content.subagents import excel_agent
 # 2. 做一个文件夹复制的工具脚本
 
 
-# 1.2 如何确保skill-creator产生的技能自动出现于agent工作目录中
+# 1.2 如何确保skill-creator产生的技能自动出现于agent_files/skills工作目录中
 
 
 
@@ -49,14 +49,16 @@ class AllAgent():
             return []
 
     def get_middles(self):
-        middles = [file_middle.FileMiddle(),rate_limit_middle.anti_rate_limit]
+        middles = [file_middle.FileMiddle(),
+                   rate_limit_middle.anti_rate_limit,
+                   excute_middle.ExecuteMiddle()]
         if cfg.USE_MINIO:
             middles.append(minio_middle.MinioMiddle())
         return middles
 
 
     def get_tools(self):
-        return [#gt.run_command,
+        return [#gt.run_command, # 原本的终端命令注释掉
                 gt.get_current_time,
                 read_doc_tools.get_file_content,
                 write_doc_tools.convert_file,
