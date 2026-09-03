@@ -138,4 +138,5 @@ dmypy.json
 cython_debug/
 
 # 学习目录里面的代码无需进入容器
-/study 
+/study
+/.langgraph_api/
