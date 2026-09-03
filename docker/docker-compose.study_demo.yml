@@ -86,7 +86,6 @@ services: # 定义所有容器服务
       # 内网连接配置（重要！）
       DATABASE_URI: postgresql://postgres:postgres@postgres:5432/postgres
       REDIS_URI: redis://:redis123@redis:6379
-      HOST_IP: minio
       # 端口改成你本机 VPN/Clash 的 HTTP 代理端口
       HTTP_PROXY: "http://host.docker.internal:18081"
       HTTPS_PROXY: "http://host.docker.internal:18081"
