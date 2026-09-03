@@ -50,9 +50,9 @@ services: # 定义所有容器服务
       MINIO_SECURE: "false"  # 禁用 HTTPS（我们没有买域名，暂时无法使用HTTPS）
     volumes:
       - minio_data:/data  # MinIO 数据持久化到宿主机
-    #ports:
-      #- "9000:9000"
-      #- "19001:9001"
+    ports:
+      - "${MINIO_PORT:-9000}:9000"
+
     command: server /data --console-address ":9001"  # 启动命令，指定数据目录和控制台端口
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]  # 检查 MinIO 存活状态
@@ -75,8 +75,8 @@ services: # 定义所有容器服务
         condition: service_healthy   # 等待Redis健康检查通过
       minio: # 依赖minio服务
         condition: service_healthy   # 等待MinIO健康检查通过
-#    ports:
-#      - "8080:8000"
+    ports:
+      - "8000:8000"
     command: langgraph up --port 8000
     env_file:
       - .env
@@ -106,11 +106,8 @@ services: # 定义所有容器服务
     ports:
       - "3000:3000"
     environment:
-      NEXT_PUBLIC_API_URL: allagent:8000
+      NEXT_PUBLIC_API_URL: ${HOST_IP}:8000
       NEXT_PUBLIC_ASSISTANT_ID: agent
-
-
-
 
 # 1. .env文件不进容器，那些环境变量怎么办。
 # 2. 如果连接外部服务，比如数据库，Redis，MinIO，如何配置？
