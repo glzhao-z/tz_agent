@@ -9,8 +9,8 @@ services: # 定义所有容器服务
       POSTGRES_PASSWORD: postgres_password
       POSTGRES_DB: postgres_db
 # 这是个数据库保存用户历史信息的，不可以暴露端口到宿主机的
-#    ports:
-#      - "5432:5432"
+    ports:
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -19,19 +19,24 @@ services: # 定义所有容器服务
       timeout: 5s        # 检查超时时间
       retries: 5         # 连续失败5次视为不健康
 
+  redis:  # Redis缓存服务（服务名称自定义）
+    image: redis:6
+    container_name: allagent-redis
+    command: redis-server --appendonly yes --requirepass redis123  # 启动命令：启用AOF持久化并设置访问密码
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - allagent-network
 
 
 
-
-
-
-
-
-
-
-
-  redis: # Redis缓存服务（服务名称自定义）
-    # 配置详情...
 
   minio: # MinIO对象存储服务（服务名称自定义）
     # 配置详情...
