@@ -1,4 +1,4 @@
-langchain
+langchain==1.2.10
 langchain_openai
 dotenv
 deepagents
@@ -8,3 +8,4 @@ langchain-mcp-adapters
 mcp
 fastapi
 pypandoc
+
