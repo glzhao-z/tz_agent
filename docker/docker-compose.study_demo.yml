@@ -105,9 +105,10 @@ services: # 定义所有容器服务
     ports:
       - "3000:3000"
     environment:
-      NEXT_PUBLIC_API_URL: ${HOST_IP}:8000
+      NEXT_PUBLIC_API_URL: http://${HOST_IP:-localhost}:8000
       NEXT_PUBLIC_ASSISTANT_ID: agent
-
+    networks:
+      - allagent-network
 # 1. .env文件不进容器，那些环境变量怎么办。
 # 2. 如果连接外部服务，比如数据库，Redis，MinIO，如何配置？
 # 3. 前端怎么连接后端
