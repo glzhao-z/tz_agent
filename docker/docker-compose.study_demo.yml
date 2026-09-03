@@ -9,8 +9,8 @@ services: # 定义所有容器服务
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
 # 这是个数据库保存用户历史信息的，不可以暴露端口到宿主机的
-    ports:
-      - "5432:5432"
+#    ports:
+#      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -18,6 +18,9 @@ services: # 定义所有容器服务
       interval: 10s      # 每10秒检查一次
       timeout: 5s        # 检查超时时间
       retries: 5         # 连续失败5次视为不健康
+    networks:
+      - allagent-network
+
 
   redis:  # Redis缓存服务（服务名称自定义）
     image: redis:6
@@ -25,8 +28,8 @@ services: # 定义所有容器服务
     command: redis-server --appendonly yes --requirepass redis123  # 启动命令：启用AOF持久化并设置访问密码
     volumes:
       - redis_data:/data
-    ports:
-      - "6379:6379"
+#    ports:
+#      - "6379:6379"
     healthcheck:
       test: [ "CMD", "redis-cli", "ping"]
       interval: 10s
@@ -44,16 +47,50 @@ services: # 定义所有容器服务
       MINIO_SECURE: "false"  # 禁用 HTTPS（我们没有买域名，暂时无法使用HTTPS）
     volumes:
       - minio_data:/data  # MinIO 数据持久化到宿主机
-    ports:
+    #ports:
       #- "9000:9000"
-      - "19001:9001"
+      #- "19001:9001"
     command: server /data --console-address ":9001"  # 启动命令，指定数据目录和控制台端口
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]  # 检查 MinIO 存活状态
       interval: 30s  # 每30秒检查一次
       timeout: 20s   # 检查超时时间20秒
       retries: 3     # 失败重试3次
+    networks:
+      - allagent-network
 
+  allagent:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: aaa-agent:latest
+    container_name: allagent-agent
+    depends_on: # 定义服务启动依赖关系
+      postgres: # 依赖postgres服务（引用上述自定义的服务名称）
+        condition: service_healthy  # 等待PostgreSQL健康检查通过
+      redis: # 依赖redis服务
+        condition: service_healthy   # 等待Redis健康检查通过
+      minio: # 依赖minio服务
+        condition: service_healthy   # 等待MinIO健康检查通过
+    ports:
+      - "8080:8000"
+    environment:
+      # 内网连接配置（重要！）
+      DATABASE_URI: postgresql://postgres:postgres@postgres:5432/postgres
+      REDIS_URI: redis://:redis123@redis:6379
+      MINIO_ENDPOINT: minio:9000  # 内网访问
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+    networks:
+      - allagent-network
+
+
+
+
+
+# 1. .env文件不进容器，那些环境变量怎么办。
+# 2. 如果连接外部服务，比如数据库，Redis，MinIO，如何配置？
+# 3. 前端怎么连接后端
 
 
 
