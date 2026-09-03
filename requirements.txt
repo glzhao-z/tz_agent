@@ -6,3 +6,5 @@ minio
 markitdown[all]
 langchain-mcp-adapters
 mcp
+fastapi
+pypandoc

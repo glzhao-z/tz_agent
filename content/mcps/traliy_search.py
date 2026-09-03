@@ -15,3 +15,6 @@ def get_tools():
     # 2. 得到mcp提供工具
     tools = asyncio.run(client.get_tools())
     return tools
+
+if __name__ == '__main__':
+    print(get_tools())
