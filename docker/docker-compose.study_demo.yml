@@ -14,7 +14,7 @@ services: # 定义所有容器服务
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      test: [ "CMD-SHELL", "pg_isready -U postgresu" ]
       interval: 10s      # 每10秒检查一次
       timeout: 5s        # 检查超时时间
       retries: 5         # 连续失败5次视为不健康
@@ -34,6 +34,28 @@ services: # 定义所有容器服务
       retries: 5
     networks:
       - allagent-network
+
+  minio:
+    image: minio/minio:latest  # 使用最新版 MinIO 镜像
+    container_name: allagent-minio  # 容器名称
+    environment:
+      MINIO_ROOT_USER: minioadmin      # 管理员用户名（默认 minioadmin）
+      MINIO_ROOT_PASSWORD: minioadmin  # 管理员密码（默认 minioadmin）
+      MINIO_SECURE: "false"  # 禁用 HTTPS（我们没有买域名，暂时无法使用HTTPS）
+    volumes:
+      - minio_data:/data  # MinIO 数据持久化到宿主机
+    ports:
+      #- "9000:9000"
+      - "19001:9001"
+    command: server /data --console-address ":9001"  # 启动命令，指定数据目录和控制台端口
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]  # 检查 MinIO 存活状态
+      interval: 30s  # 每30秒检查一次
+      timeout: 20s   # 检查超时时间20秒
+      retries: 3     # 失败重试3次
+
+
+
 
 # 数据卷定义：用于持久化存储数据
 volumes:
