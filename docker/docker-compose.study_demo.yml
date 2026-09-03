@@ -72,8 +72,8 @@ services: # 定义所有容器服务
         condition: service_healthy   # 等待Redis健康检查通过
       minio: # 依赖minio服务
         condition: service_healthy   # 等待MinIO健康检查通过
-    ports:
-      - "8080:8000"
+#    ports:
+#      - "8080:8000"
     environment:
       # 内网连接配置（重要！）
       DATABASE_URI: postgresql://postgres:postgres@postgres:5432/postgres
@@ -84,6 +84,17 @@ services: # 定义所有容器服务
     networks:
       - allagent-network
 
+  allagent-ui:
+    build:
+      context: ../sub_projects/agent-chat-ui
+      dockerfile: Dockerfile
+    image: aaa-ui:latest
+    container_name: allagent-ui
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: allagent:8000
+      NEXT_PUBLIC_ASSISTANT_ID: agent
 
 
 
