@@ -92,7 +92,12 @@ services: # 定义所有容器服务
       ALL_PROXY: "http://host.docker.internal:18081"
       # 内网服务不要走代理
       NO_PROXY: "localhost,127.0.0.1,postgres,redis,minio,allagent-network"
-
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/ok" ]
+      interval: 30s  # 每30秒检查一次
+      timeout: 20s   # 检查超时时间20秒
+      retries: 3     # 失败重试3次
+      start_period: 90s # 启动期90秒
     networks:
       - allagent-network
 
@@ -109,6 +114,9 @@ services: # 定义所有容器服务
       NEXT_PUBLIC_ASSISTANT_ID: agent
     networks:
       - allagent-network
+    depends_on: # 定义服务启动依赖关系
+      allagent:
+        condition: service_healthy
 # 1. .env文件不进容器，那些环境变量怎么办。
 # 2. 如果连接外部服务，比如数据库，Redis，MinIO，如何配置？
 # 3. 前端怎么连接后端

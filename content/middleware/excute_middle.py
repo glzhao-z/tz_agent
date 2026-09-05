@@ -37,6 +37,8 @@ class ExecuteMiddle(AgentMiddleware):
         paths = re.findall(pattern, command)
         return paths[0] if paths else None
 
+    
+
     # wrap_tool_call的中间件
     # 如果包含root_dir，就消掉即可。
     async def awrap_tool_call(self,request,handler):
