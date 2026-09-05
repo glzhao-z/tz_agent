@@ -1,0 +1,130 @@
+# 该示例仅包含五个服务与依赖关系
+
+services: # 定义所有容器服务
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: allagent-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+# 这是个数据库保存用户历史信息的，不可以暴露端口到宿主机的
+#    ports:
+#      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgresu" ]
+      interval: 10s      # 每10秒检查一次
+      timeout: 5s        # 检查超时时间
+      retries: 5         # 连续失败5次视为不健康
+    networks:
+      - allagent-network
+
+
+  redis:  # Redis缓存服务（服务名称自定义）
+    image: redis:6
+    container_name: allagent-redis
+    command: redis-server --appendonly yes --requirepass redis123  # 启动命令：启用AOF持久化并设置访问密码
+    volumes:
+      - redis_data:/data
+#    ports:
+#      - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - allagent-network
+
+  minio:
+    image: minio/minio:latest  # 使用最新版 MinIO 镜像
+    container_name: allagent-minio  # 容器名称
+    env_file:
+      - .env
+    environment:
+      # 从.env文件里取用户名密码
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}      # 管理员用户名（默认 minioadmin）
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minioadmin}  # 管理员密码（默认 minioadmin）
+      MINIO_SECURE: "false"  # 禁用 HTTPS（我们没有买域名，暂时无法使用HTTPS）
+    volumes:
+      - minio_data:/data  # MinIO 数据持久化到宿主机
+    ports:
+      - "${MINIO_PORT:-9000}:9000"
+
+    command: server /data --console-address ":9001"  # 启动命令，指定数据目录和控制台端口
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]  # 检查 MinIO 存活状态
+      interval: 30s  # 每30秒检查一次
+      timeout: 20s   # 检查超时时间20秒
+      retries: 3     # 失败重试3次
+    networks:
+      - allagent-network
+
+  allagent:
+    image: rexrex9/aaa-agent:latest
+    container_name: allagent-agent
+    depends_on: # 定义服务启动依赖关系
+      postgres: # 依赖postgres服务（引用上述自定义的服务名称）
+        condition: service_healthy  # 等待PostgreSQL健康检查通过
+      redis: # 依赖redis服务
+        condition: service_healthy   # 等待Redis健康检查通过
+      minio: # 依赖minio服务
+        condition: service_healthy   # 等待MinIO健康检查通过
+    ports:
+      - "8000:8000"
+    command: langgraph up --port 8000
+    env_file:
+      - .env
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # 宿主机内网网关地址
+    environment:
+      # 内网连接配置（重要！）
+      DATABASE_URI: postgresql://postgres:postgres@postgres:5432/postgres
+      REDIS_URI: redis://:redis123@redis:6379
+      # 端口改成你本机 VPN/Clash 的 HTTP 代理端口
+      HTTP_PROXY: "http://host.docker.internal:18081"
+      HTTPS_PROXY: "http://host.docker.internal:18081"
+      ALL_PROXY: "http://host.docker.internal:18081"
+      # 内网服务不要走代理
+      NO_PROXY: "localhost,127.0.0.1,postgres,redis,minio,allagent-network"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/ok" ]
+      interval: 30s  # 每30秒检查一次
+      timeout: 20s   # 检查超时时间20秒
+      retries: 3     # 失败重试3次
+      start_period: 90s # 启动期90秒
+    networks:
+      - allagent-network
+
+  allagent-ui:
+    image: rexrex9/aaa-ui:latest
+    container_name: allagent-ui
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://${HOST_IP:-localhost}:8000
+      NEXT_PUBLIC_ASSISTANT_ID: agent
+    networks:
+      - allagent-network
+    depends_on: # 定义服务启动依赖关系
+      allagent:
+        condition: service_healthy
+# 1. .env文件不进容器，那些环境变量怎么办。
+# 2. 如果连接外部服务，比如数据库，Redis，MinIO，如何配置？
+# 3. 前端怎么连接后端
+
+
+
+# 数据卷定义：用于持久化存储数据
+volumes:
+  postgres_data:    # PostgreSQL 数据库数据持久化
+  redis_data:       # Redis 缓存数据持久化
+  minio_data:       # MinIO 对象存储数据持久化
+  agent_files:      # Agent 生成文件持久化存储
+
+# 网络配置：定义容器间的网络通信
+networks:
+  allagent-network:  # 自定义桥接网络
+    driver: bridge   # 使用桥接网络模式
