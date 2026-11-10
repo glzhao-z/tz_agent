@@ -25,22 +25,6 @@
 - 🔧 快速搭建企业级智能助手
 - 🚀 二次开发定制化AI应用
 
-### 关注在下
-
-👉 **B站主页** ：[骰子AI](https://space.bilibili.com/497998686?spm_id_from=333.40164.0.0)
- 获取项目最新动态、使用教程和技术分享
-
-### 示例视频
-
-1. [NLP交互式教程网站示例_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1h8vsBkEZZ?spm_id_from=333.788.videopod.episodes&vd_source=bc94e8f868f066fb821a0de022a1b052)
-   - 对应结果: [NLP交互式教程网站示例.zip](assets/examples/NLP交互式教程网站示例.zip)
-
-2. [联网搜索与制作excel示例_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1h8vsBkEZZ?spm_id_from=333.788.videopod.episodes&vd_source=bc94e8f868f066fb821a0de022a1b052&p=2)
-   - 对应结果: [联网搜索与制作excel示例.zip](assets/examples/联网搜索与制作excel示例.zip)
-
-3. [图文绘本制作示例_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1h8vsBkEZZ?spm_id_from=333.788.videopod.episodes&vd_source=bc94e8f868f066fb821a0de022a1b052&p=3)
-   - 对应结果: [图文绘本制作示例.zip](assets/examples/图文绘本制作示例.zip)
-
 ## 主要功能特性
 
 ### 智能代理能力
@@ -199,15 +183,6 @@ A: 停止：`docker compose down`，重启：`docker compose restart`
 - 增加用户可自行接入MCP的功能
 
 - 增加用户可自行接入Agent Skills的功能
-
-
-## 联系我们
-
-- 💬 问题反馈：[提交Issue](https://github.com/rexrex9/all_agent/issues)
-- 📺 B站：[骰子AI](https://space.bilibili.com/497998686)
-
-
-
 
 ## 致谢与引用
 
